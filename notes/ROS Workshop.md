@@ -582,6 +582,9 @@ Imagine a robot with a camera and wheels:
     - `motor_driver_node` → sends commands to the motors.
     - `main_control_node` → executes motion commands from the planner.
     - `state_publisher_node` → publishes the robot’s current status.
+    
+![ROS2 packages](pictures/image(1).png)
+
 
 ![[image(1).png]]
 
@@ -4340,7 +4343,3 @@ Launch files are not just a convenience—they are an essential tool for keeping
 # Final Project
 
 # Table of Contents
-
-```table-of-contents
-```
-
