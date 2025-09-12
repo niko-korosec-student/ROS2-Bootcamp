@@ -1,0 +1,55 @@
+{
+    "name": "ROS 2 Development Container",
+    "privileged": true,
+    "remoteUser": "nico",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "USERNAME": "nico"
+        }
+    },
+    "workspaceFolder": "/home/ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws,type=bind",
+    "customizations": {
+        "vscode": {
+            "extensions":[
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "twxs.cmake",
+                "donjayamanne.python-extension-pack",
+                "eamodio.gitlens",
+                "ms-iot.vscode-ros"
+          ],
+            "settings": {
+                "remote.containers.autoForwardPorts": false,
+                "remote.autoForwardPorts": false,
+                "remote.portsAttributes": {
+                    "0-65535": {
+                        "onAutoForward": "ignore"
+                    }
+                }
+            }
+        }
+    },
+
+    "containerEnv": {
+        "DISPLAY": "unix:0",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+        "ROS_DOMAIN_ID": "42"
+    },
+    "runArgs": [
+        "--net=host",
+        "--pid=host",
+        "--ipc=host",
+        "-e", "DISPLAY=${env:DISPLAY}"
+    ],
+    "mounts": [
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
+        "source=ros2_build_cache,target=/home/ws/build,type=volume",
+        "source=ros2_install_cache,target=/home/ws/install,type=volume",
+        "source=ros2_log_cache,target=/home/ws/log,type=volume"
+    ],
+    "postCreateCommand": "bash -c \\"grep -qxF 'source /home/ws/setup_ws.sh' /home/nico/.bashrc || echo 'source /home/ws/setup_ws.sh' >> /home/nico/.bashrc\\""
+
+}
