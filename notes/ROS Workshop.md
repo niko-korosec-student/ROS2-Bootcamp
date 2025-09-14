@@ -229,7 +229,7 @@ code .
         "source=ros2_install_cache,target=/home/ws/install,type=volume",
         "source=ros2_log_cache,target=/home/ws/log,type=volume"
     ],
-    "postCreateCommand": "bash -c \\"grep -qxF 'source /home/ws/setup_ws.sh' /home/nico/.bashrc || echo 'source /home/ws/setup_ws.sh' >> /home/nico/.bashrc\\""
+    "postCreateCommand": "postCreateCommand": "bash -c \"grep -qxF 'source /home/ws/setup_ws.sh' /home/nico/.bashrc || echo 'source /home/ws/setup_ws.sh' >> /home/nico/.bashrc\""
 
 }
 ```
