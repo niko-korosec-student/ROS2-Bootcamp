@@ -1,3 +1,4 @@
+# ROS2 - Bootcamp
 
 Robotics today is undergoing a transformation, moving rapidly from research labs into industrial and commercial applications. One of the biggest drivers of this change has been the adoption of open-source frameworks that allow engineers and researchers to share tools, build upon existing work, and standardize solutions across different domains. The **Robot Operating System (ROS)** has become one of the most influential of these frameworks. Initially developed as ROS1, it provided a modular, flexible foundation for developing robotic applications. However, ROS1 was not without limitations, especially when it came to scalability, real-time performance, and long-term support. To address these challenges, the next generation, **ROS2**, was created.
 
@@ -36,8 +37,6 @@ A roadmap of what’s included:
 - Working with parameters and YAML configuration files
 - Writing launch files to start and configure multiple nodes efficiently
 - Building a final project that ties everything together into one complete robotic system
-
-Table of Contents: [[#Table of Contents]]
 
 # ROS1 vs ROS2
 
@@ -132,13 +131,13 @@ By the end of this step, you will have a ready-to-use development environment wh
 
 To set up a ROS 2 workspace that can be built and accessed inside a Docker container, follow these steps:
 
-_**ws 
+**ws 
 ├── .devcontainer 
 │ ├── devcontainer.json 
 │ └── Dockerfile 
 ├── src 
 ├── package1 
-└── package2**_
+└── package2**
 
 ```bash
 //Create the workspace directory structure:
@@ -159,7 +158,7 @@ Inside `.devcontainer`, you will place two important files:
 
 **Open VS Code in the workspace folder:**
 
-```json
+```bash
 cd ~/ws
 code .
 ```
@@ -582,11 +581,8 @@ Imagine a robot with a camera and wheels:
     - `motor_driver_node` → sends commands to the motors.
     - `main_control_node` → executes motion commands from the planner.
     - `state_publisher_node` → publishes the robot’s current status.
-    
-![ROS2 packages](pictures/image(1).png)
 
-
-![[image(1).png]]
+![Packages](packages.png)
 
 Nodes form a **graph of programs** that communicate with each other using **ROS 2 Topics, Services, and Parameters**. The benefits of using nodes include:
 
@@ -804,8 +800,6 @@ if __name__ == "__main__":
     main()
 ```
 
-
-
 To make this node runnable through ROS 2 commands, add it to the `entry_points` section of your `setup.py`:
 
 ```python
@@ -939,7 +933,7 @@ Open **RQT Graph**:
 rqt_graph
 ```
 
-![[image 1.png]]
+![RQT graph](rqt_graph.png)
 
 You will now see how nodes interact and communicate via topics, providing a real-time view of the ROS 2 graph.
 
@@ -949,7 +943,7 @@ You will now see how nodes interact and communicate via topics, providing a real
 
 ## Activity 1.0
 
-![[activiy_1.webp]]
+![Activity 1](images/activiy_1.webp)
 
 Here’s a small challenge to practice running multiple nodes and visualizing them with RQT. Imagine I’ve already started some nodes, and the `rqt_graph` looks like a specific configuration.
 
@@ -1029,7 +1023,7 @@ Multiple nodes can subscribe to the same topic, just like multiple radios can tu
 - Publishers and subscribers remain **independent**, only interacting via the topic. This separation simplifies system design and reduces dependencies between nodes.
 - This architecture makes ROS 2 systems highly **modular, flexible, and scalable**, allowing developers to add new nodes, change message flows, or update existing functionality without breaking other parts of the system.
 
-![[Ros2 topic.png]]
+![ROS2 topic](images/ros2_topic.png)
 
 ## ROS2 - Publisher
 
@@ -1073,7 +1067,6 @@ string data
 
 This tells us that any message of this type will have a single string field called `data`. For now, we don’t need to dive deeper into message definitions, just know that messages are structured data containers that publishers send and subscribers receive.
 
-
 **Here is a complete Python code for our `robot_news_station` node:**
 
 ```Python
@@ -1107,7 +1100,6 @@ def main(args=None):
 
 if __name__ == "__main__":
 	main()```
-
 
 When we create a publisher in code, we are specifying three things:
 
@@ -1151,7 +1143,6 @@ colcon build --packages-select my_py_pkg --symlink-install
 #using symlink so no need to compile anymore
 ```
 
-
 Once the code is complete and the package is built, we can run our publisher node from a terminal:
 
 ```bash
@@ -1180,7 +1171,7 @@ ros2 topic echo /robot_news
 
 You will see output like this, updated in real time every time the publisher sends a message:
 
-![[Pasted image 20250826173805.png]]
+![Echo](terminal1.png)
 
 This confirms that your publisher is actively sending messages on the robot_news topic, and any subscriber to this topic would receive the same data.
 
@@ -1276,7 +1267,7 @@ ros2 run my_py_pkg smartphone
 
 As soon as the subscriber starts, it will automatically begin listening to the `robot_news` topic. You should immediately see the messages from the publisher appear in the subscriber’s terminal. Each message corresponds to the data being published, demonstrating that information is flowing from one node to another in real time.
 
-![[Pasted image 20250826180834.png]]
+![Run](terminal2.png)
 
 This setup illustrates a core concept in ROS 2: **asynchronous communication via topics**. The publisher and subscriber do not need to know about each other directly—they only communicate through the topic. You can even run multiple subscribers or publishers on the same topic, and all of them will exchange data seamlessly. Watching the messages appear live helps reinforce how nodes interact in a modular, scalable ROS 2 system.
 
@@ -1332,7 +1323,7 @@ rqt_graph
 
 In a separate terminal, launch the **robot_news_station** node. Then, in a third terminal, run the **smartphone** subscriber. Refresh the RQT Graph window, and you should see two nodes connected by the `robot_news` topic—the publisher sending messages and the subscriber receiving them. This live view makes it easy to see the flow of data and verify that communication is working correctly.
 
-![[Pasted image 20250826183638.png]]
+![RQT](images/rqt_1.png)
 
 ROS 2 allows multiple instances of the same node to run simultaneously, as long as each node has a unique name. Let’s add another publisher. To avoid name conflicts, we remap the node name:
 
@@ -1340,7 +1331,7 @@ ROS 2 allows multiple instances of the same node to run simultaneously, as long 
 ros2 run my_py_pkg robot_news_station --ros-args -r __node:=station2
 ```
 
-![[Pasted image 20250826184116.png]]
+![RQT 2](images/rqt_2.png)
 
 We can add yet another publisher the same way:
 
@@ -1366,7 +1357,7 @@ Then, to receive messages from that topic, we run a subscriber with a matching r
 ros2 run my_py_pkg smartphone --ros-args -r __node:=smartphone3 -r robot_news:=my_news
 ```
 
-![[Pasted image 20250826185211.png]]
+![RQT 3](images/rqt_3.png)
 
 By doing this, you can have multiple publishers and subscribers running simultaneously, each communicating independently over their respective topics. Watching this in RQT Graph gives a clear picture of the ROS 2 network in action, showing how nodes and topics interact dynamically.
 
@@ -1388,11 +1379,12 @@ ros2 run turtlesim turtle_teleop_key
 
 If you now open **RQT Graph**, you’ll see how the communication looks: the teleop node is publishing velocity commands, and the turtlesim node is subscribing to those commands. The same information can also be explored from the command line.
 
-![[Pasted image 20250827103628.png]]
+![RQT turtlesim](images/rqt_4.png)
+
 
 For example, running `ros2 node list` shows all active nodes. 
 
-![[Pasted image 20250827104948.png]]
+![[terminal3.png]]
 
 To get more details about a specific node, such as what topics it publishes and subscribes to, you can run:
 
@@ -1408,7 +1400,8 @@ Next, check which topics are alive with:
 ros2 topic list
 ```
 
-![[Pasted image 20250827104845.png]]
+![Topic list](images/terminal4.png)
+
 
 If we look specifically at the command velocity topic, we can ask for more info:
 
@@ -1416,7 +1409,8 @@ If we look specifically at the command velocity topic, we can ask for more info:
 ros2 topic info /turtle1/cmd_vel
 ```
 
-![[Pasted image 20250827105021.png]]
+![topic info](images/terminal5.png)
+
 
 This tells us the message type and how many publishers and subscribers are connected. Since this topic uses a `Twist` message, we can inspect its structure:
 
@@ -1426,7 +1420,8 @@ ros2 interface show geometry_msgs/msg/Twist
 
 This shows us that the `Twist` message contains two vectors: one for **linear velocity** and one for **angular velocity**.
 
-![[Pasted image 20250827105103.png]]
+![Interfaces](images/terminal6.png)
+
 
 Now let’s try publishing to this topic ourselves. Instead of controlling the turtle with the keyboard, we can send commands directly:
 
@@ -1438,7 +1433,7 @@ This command publishes messages at a rate of 2 per second, telling the turtle to
 
 Because translation and rotation happen at the same time, the turtle doesn’t just move straight or spin in place—it moves in a **circle**. This is a perfect illustration of how publishers send data, how subscribers receive it, and how message fields control real behaviour in ROS 2.
 
-![[Pasted image 20250827105349.png]]
+![Teleop example](images/teleop1.png)
 
 The turtle moves in a circle because we give it both a forward velocity (`linear.x = 1.0`) and a turning velocity (`angular.z = 1.0`) at the same time—so instead of going straight or just spinning, it combines the two motions into a circular path.
 
@@ -1451,7 +1446,7 @@ In this activity, we’ll build two simple nodes that work together through topi
 
 This creates a small “pipeline”: numbers flow out of one node, get processed by another, and result in a running total being shared with the rest of the system.
 
-![[image(5).png]]
+![Activity example](images/activity_2.png)
 
 **Number Publisher**
 
@@ -1744,18 +1739,17 @@ In ROS 2, a **service** is a client-server communication mechanism that allows a
 
 Services can operate **synchronously** or **asynchronously**:
 
-- **Synchronous:** The client waits (blocks) until the server responds. It’s like making a phone call—you ask a question and stay on the line until you get the answer. This is simple but can delay the client if the server is slow.
-    
+- **Synchronous:** The client waits (blocks) until the server responds. It’s like making a phone call, you ask a question and stay on the line until you get the answer. This is simple but can delay the client if the server is slow.
 - **Asynchronous:** The client sends the request and continues its work without waiting. A callback handles the server’s response when it arrives. It’s like sending an email—you keep working and deal with the reply later. This approach keeps nodes responsive, which is crucial for real-time robotics.
-    
 
 Each service has a **unique name** and defines two message types: one for the **request** and one for the **response**. Multiple clients can send requests to the same server, but only one server exists per service. Services are ideal for operations that need confirmation, such as turning a device on/off, performing calculations, or querying the robot’s state.
 
-In short, **topics** are for streaming continuous data, while **services** are for controlled interactions where nodes ask for something and wait for a reply, making them essential for interactive and responsive robotic behaviors.
+In short, **topics** are for streaming continuous data, while **services** are for controlled interactions where nodes ask for something and wait for a reply, making them essential for interactive and responsive robotic behaviours.
 
-![[Service-MultipleServiceClient.gif]]
+![Multiple service client demo](images/Service-MultipleServiceClient.gif)
 
-#### Robotics Example: Controlling an LED Panel
+
+## Robotics Example: Controlling an LED Panel
 
 Imagine you’re working on a robotic system with a node that manages an LED panel. This panel node can turn individual LEDs on or off, but instead of continuously broadcasting its state like a topic, it reacts only when another node requests it.
 
@@ -1791,7 +1785,7 @@ The three dashes `---` separate the **request** from the **response**. Here:
 
 - `a` and `b` are integers sent from the client as the request.
 - `sum` is the integer returned by the server as the response.
-- 
+
 So, the client sends `a` and `b`, the server calculates the sum, and then returns it in the `sum` field.
 
 ### Creating the Service Node
@@ -1885,7 +1879,7 @@ You will see the service:
 /add_two_ints: example_interfaces/srv/AddTwoInts
 ```
 
-#### Testing the Service from the Terminal
+### Testing the Service from the Terminal
 
 You can call the service directly:
 
@@ -1900,7 +1894,7 @@ sum: 69
 
 This demonstrates a **complete request-response cycle** with a ROS 2 service.
 
-![[Pasted image 20250901193243.png]]
+![service call ](images/terminal7.png)
 
 ### Creating the Client Node - no OOP
 
@@ -1945,7 +1939,7 @@ If we run the client before the server:
 ros2 run my_py_pkg add_two_ints_client_no_oop
 ```
 
-![[Pasted image 20250901200300.png]]
+![Warning ](images/terminal10.png)
  
  we will see the warning: **“Waiting for server Add two ints…”** repeatedly. This is expected because the service server is not running yet. Once we start the `add_two_ints_server` node, the warning stops, and the client successfully connects to the server.
  
@@ -1993,7 +1987,7 @@ main()
  
 Now, when both the service server and client are running, the client sends the two integers to the server, receives the computed sum, and prints it in the terminal. This demonstrates the complete **request-response cycle**: the client requests, the server processes, and the client receives the result.
 
-![[Pasted image 20250901204333.png]]
+![run node](images/terminal11.png)
 
 ### Creating the Client Node - OOP
 
@@ -2071,6 +2065,7 @@ and build your package:
 ```bash
 colcon build --packages-select my_py_pkg --symlink-install
 ```
+
 Now you can run the OOP client node:
 
 ```bash
@@ -2079,7 +2074,7 @@ ros2 run my_py_pkg add_two_ints_client
 
 You will see the sums printed for each request as the server responds. This version is cleaner, more maintainable, and better suited for larger projects than the no-OOP version.
 
-![[Pasted image 20250901211145.png]]
+![Run](images/terminal12.png)
 
 
 ## Services Command line Tools 
@@ -2102,7 +2097,7 @@ To get detailed info about the node, including which services it provides:
 ros2 node info /add_two_ints_server
 ```
 
-![[Pasted image 20250902182506.png]]  
+![Node Info](images/terminal13.png)
 
 You’ll see the service `/add_two_ints` listed along with its interface.
 
@@ -2115,7 +2110,7 @@ ros2 interface show example_interfaces/srv/AddTwoInts
 
 This shows the request and response fields, so you know what data to send and expect back.
 
-![[Pasted image 20250902182903.png]]  
+![Service type](images/terminal14.png)
 
 To call the service directly from the terminal:
 
@@ -2123,9 +2118,10 @@ To call the service directly from the terminal:
 ros2 service call /add_two_ints example_interfaces/srv/AddTwoInts "{a: 3, b: 5}"
 ```
 
-![[Pasted image 20250902182537.png]]  
+![Call service](images/terminal15.png)
 
-#### Using RQT to Call Services
+
+### Using RQT to Call Services
 
 Open RQT with:
 
@@ -2135,11 +2131,11 @@ rqt
 
 Then go to **Plugins → Services → Service Caller**. Enter the request data and click **Call**. This allows you to test services visually without writing code.
 
-![[Pasted image 20250902183114.png]]  
+![RQT service caller 1](images/rqt_5.png)
 
-![[Pasted image 20250902183204.png]]  
+![RQT service caller 2](images/rqt_6.png)
 
-  
+
 ### Remapping Service Names at Runtime
 
 ROS 2 allows you to **remap service names** at runtime, which can be useful for reusing servers or organizing your system. For example, if the original service is `/add_two_ints`, you can start the server with a new name:
@@ -2158,7 +2154,7 @@ Now the client and server can communicate normally.
 
 This feature is convenient when you want to connect different clients to an existing service, separate parts of your application, or avoid renaming code—remapping provides flexibility without changing the underlying node logic.
 
-  
+
 ## Turtlesim Services  
 
 First, start the Turtlesim node:
@@ -2181,9 +2177,9 @@ ros2 service list
 
 Now drive the turtle around a bit using the teleop keys. This ensures the turtle has drawn some paths to interact with.
 
-![[Pasted image 20250902184203.png]]  
+![Teleop Service](images/teleop2.png)
 
-#### Clearing the Screen
+### Clearing the Screen
 
 The `/clear` service removes the turtle’s path from the screen:
 
@@ -2199,11 +2195,12 @@ ros2 service type /clear
 
 After calling `/clear`, the Turtlesim node logs that the screen has been cleared.
 
-![[Pasted image 20250902184423.png]]  
+![Teleop clear](images/teleop3.png)
+
 
 We can see that on the node that we ran first `turtlesim turtlesim_node` there is a new log that says we cleared turtlesim.
 
-#### Spawning a New Turtle
+### Spawning a New Turtle
 
 The `/spawn` service creates a new turtle in the window. Check its type and interface:
 
@@ -2212,7 +2209,7 @@ ros2 service type /spawn
 ros2 interface show turtlesim/srv/Spawn
 ```
 
-![[Pasted image 20250902184813.png]]  
+![Terminal interface](images/terminal16.png)
 
 Call the service with specific coordinates and name:
 
@@ -2220,7 +2217,7 @@ Call the service with specific coordinates and name:
 ros2 service call /spawn /turtlesim/srv/Spawn “{x: 5.0, y: 5.0, theta: 0.0, name: ‘zeljko’}”
 ```
 
-![[Pasted image 20250902190330.png]]  
+![Spawn clear](images/teleop4.png)
 
 Now we can do the job of a straw and kill a turtle! First, check the service type:
 
@@ -2249,11 +2246,11 @@ After this, the Turtlesim window will be empty—a clean slate!
 - The node `number_publisher` publishes a number on the `/number` topic.
 - The node `number_counter` subscribes to `/number`, adds each incoming number to a counter, and publishes the total on `/number_count`.
 
-![[activity_ser_1.jpg]]  
+![Activity 2](images/activity_2.png)  
 
 **What you’ll add now:**
 
-![[activiy_ser_2.webp]]  
+![Activity 3](images/activity_3.png)  
 
 **Add a service to reset the counter:**
 
@@ -2285,7 +2282,7 @@ ros2 interface show example_interfaces/srv/SetBool
 
 This shows the request has a boolean `data` field, and the response contains a `success` flag and a message.
 
-![[Pasted image 20250902192530.png]]  
+![Terminal interface](images/terminal17.png)
 
 Now, let’s edit the `number_counter` program to add a service server that can reset the counter:
 
@@ -2376,11 +2373,12 @@ ros2 topic echo /number_counter
 
 This will show the counter resetting to `0` after the service call.
 
-![[Pasted image 20250902194855.png]]  
+![Terminal service call](images/terminal18.png)
 
 You can also use **RQT** to send the correct boolean value to the service and reset the counter via GUI.
 
-![[Pasted image 20250902195434.png]]  
+![Terminal rqt service call](images/terminal19.png)
+
 
 ### Section Overview - Services
 
@@ -2408,7 +2406,7 @@ In general, topics and services provide the **communication layer**, while the i
 
 Interfaces are what make ROS 2 so powerful: they allow nodes written in different languages (Python, C++, etc.) to communicate seamlessly, as long as they agree on the same interface. Once a message or service definition is created, it can be reused across many nodes and projects.
 
-### How Interfaces Work
+## How Interfaces Work
 
 When you create a message definition and run `colcon build`, the build system processes that definition and generates source code in supported ROS 2 languages. That’s why you can `#include` a message header in C++ or `import` a message library in Python—the build system has created those files for you.
 
@@ -2432,11 +2430,11 @@ string content
 ```
 These definitions are stored in the `msg/` or `srv/` folder of a package. Under the hood, ROS 2 converts them into `.idl` files for DDS, but developers usually only work with `.msg` and `.srv`.
 
-### Data Types
+## Data Types
 
 ROS 2 provides a set of primitive types for building interfaces, such as `bool`, `int64`, `float64`, and `string`. You can also create arrays of these types or include other message definitions. Most mappings to Python or C++ are very straightforward—for instance, a ROS `string` just becomes a normal Python string.
 
-### Exploring Existing Interfaces
+## Exploring Existing Interfaces
 
 ROS 2 already comes with many ready-to-use interfaces. For example, the **example_interfaces** package contains definitions like `Int64.msg`, which simply defines one integer field named `data`. You can browse repositories like **example_interfaces** or **common_interfaces** on GitHub to see the full set of available messages and services.
 
@@ -2573,7 +2571,7 @@ With this setup, when we build the workspace using: colcon build --symlink-insta
 colcon build --symlink-install
 ```
 
-![[Pasted image 20250903113809.png]]
+![Terminal interface](images/terminal20.png)
 
 we are now ready to use our newly created `HardwareStatus` message in a Python program. Let’s create a publisher node. First, navigate to your package folder:
 
@@ -2653,11 +2651,11 @@ ros2 topic list
 ros2 topic echo /hardware_status
 ```
 
-![[Pasted image 20250903124148.png]]
+![Terminal Run](images/terminal21.png)
 
 This confirms that our node is publishing messages successfully. With this setup, any other node in the workspace can **subscribe to `/hardware_status`** and receive real-time hardware status updates. This demonstrates the power of custom message types for modular, reusable communication between nodes.
 
-## Create SRV interface
+## Create SRV Interface
 
 In addition to messages, you can also create **custom services** to enable request-response communication between nodes. We’ll create our services in the same package we used for messages, `my_robot_interfaces`. If starting from scratch, the package setup is identical to what we described for messages.
 
@@ -2721,12 +2719,11 @@ Press `Tab` twice after the last `/` to see a list of all interfaces in the pack
 ros2 interface show my_robot_interfaces/srv/ComputeRectangleArea
 ```
 
-![[Pasted image 20250903130140.png]]
+![Terminal Interface](images/terminal22.png)
 
 This command displays the request and response fields of the service, confirming the structure you defined.
 
-
-## Interface Command line Tools 
+## Interface Command Line Tools 
 
 Once your interfaces are built, ROS 2 provides several command-line tools to inspect them and understand how nodes communicate.
 
@@ -2767,12 +2764,11 @@ This shows which topics or services a node provides, along with their interface 
 
 ## Activity 4.0
 
-
 In this activity, you’ll implement the **battery + LED panel** example that we used earlier to understand how Services work. The idea is simple: when the battery is empty, a LED should turn **on**, and when the battery is full again, the LED should turn **off**.
 
 Let’s start with the initial state:
 
-![](https://img-c.udemycdn.com/redactor/raw/article_lecture/2022-04-18_07-56-40-de34c8fda174609cc1285072534a42ec.png)
+![Service activity](images/service_1.png)
 
 - **Blue boxes** represent nodes
 - **Orange boxes** represent services
@@ -2782,26 +2778,26 @@ At first, the battery is full, and all LEDs on the LED panel are powered off (`[
 
 We don’t need an actual robot here—we’ll simulate everything. The **battery state** can simply be a variable inside the battery node, while the **LED panel** can be an integer array inside the LED panel node.
 
-#### Simulating the battery
+### Simulating the battery
 
 We’ll make the battery alternate between full and empty:
 
 - After 4 seconds, the battery becomes **empty**.
 - After another 6 seconds, the battery becomes **full** again.
 - And so on, looping between the two states indefinitely (until you press `CTRL+C`).
-#### Interactions
+### Interactions
 
 When the battery is empty, the **battery node** will send a **request** to the LED panel node to power on a LED:
 
-![](https://img-c.udemycdn.com/redactor/raw/article_lecture/2022-04-18_07-56-40-c79207be8245dae0c2b5dc82e86b8d4e.png)
+![Service activity](images/service_2.png)
 
 Six seconds later, when the battery is full again, the battery node will send another request to power the LED off:
 
-![](https://img-c.udemycdn.com/redactor/raw/article_lecture/2022-04-18_07-56-40-c5aa9593f237c85930b85dad95c0a0b7.png)
+![Service activity](images/service_3.png)
 
 This cycle will keep repeating: **battery empty → LED on → battery full → LED off**.
 
-#### What you need to create
+### What you need to create
 
 To complete this activity, you will implement:
 
@@ -2812,7 +2808,7 @@ To complete this activity, you will implement:
 
 This exercise is especially important because it brings together everything you’ve learned so far—topics, services, custom interfaces, and node design.
 
-#### Steps for the solution
+### Steps for the solution
 
 To make it clear and easy to follow, the solution will be structured into three steps:
 
@@ -2822,8 +2818,7 @@ To make it clear and easy to follow, the solution will be structured into three 
 
 ## Solution 4.0
  
-#### **Step 1**: Create the LED panel node and publish its state 
-
+### **Step 1**: Create the LED panel node and publish its state 
 
 We need a custom interface because the LED panel state will be published as a custom message. Let’s create that first.
 
@@ -2868,7 +2863,7 @@ ros2 interface show my_robot_interfaces/msg/LedStateArray
 
 If the message definition is displayed, the interface is ready to use. If it doesn’t appear, try closing and reopening VS Code, which will ensure that the environment is properly sourced.
 
-![[Pasted image 20250905095258.png]]
+![Terminal interfaces](images/terminal23.png)
 
 Now create the LED panel node inside your Python package:
 
@@ -2879,7 +2874,6 @@ chmod +x led_panel.py
 ```
 
 You can now edit `led_panel.py` to implement the LED panel node that will publish the LED states using your new custom message.
-
 
 ```python
 #!/usr/bin/env python3
@@ -2938,9 +2932,9 @@ ros2 topic echo /led_panel_state
 
 This confirms that the LED panel node is publishing the LED states correctly.
 
-![[Pasted image 20250905102555.png]]
+![Terminal run](images/terminal24.png)
 
-#### **Step 2**: Add a service server inside the LED panel node 
+### **Step 2**: Add a service server inside the LED panel node 
 
 In this step, the LED panel node is extended with a **service server**, which allows modifying the state of an LED from outside the node using a service client. The service needs to receive two pieces of data: the LED number and the new state. For this, a new service interface is created.
 
@@ -3019,19 +3013,23 @@ The LED panel node keeps a list of LED states and publishes it on `/led_panel_st
 Key points about the implementation:
 
 - **Custom message and service integration:**
+
     - `LedStateArray` is a custom message type containing an array of integers (`led_states`) representing the state of each LED.
     - `SetLed` is a custom service with a request part (`led_number`, `state`) and a response part (`success`).
     - These interfaces are declared in the `my_robot_interfaces` package, built using `colcon`, and imported into the node. The code then uses them directly to publish messages and handle service requests.
     
 - **Publisher setup:**
+
     - `self.led_states_pub_ = self.create_publisher(LedStateArray, "led_panel_state", 10)` creates a publisher that broadcasts the LED states on the topic `/led_panel_state`.
     - The message is published either periodically through a timer (`create_timer`) or immediately in response to a service call.
     
 - **Timer logic:**
+
     - `self.led_states_timer_ = self.create_timer(5.0, self.publish_led_state)` sets up a repeating timer that calls `publish_led_state()` every 5 seconds.
     - This ensures that the LED state is broadcast regularly even if no service calls occu.
 
 - **Service server and callback logic:**
+
     - `self.set_led_service_ = self.create_service(SetLed, "set_led", self.callback_set_led)` registers a service named `/set_led`.
     - When a client calls this service, ROS 2 automatically invokes `callback_set_led` with a `request` object containing `led_number` and `state`, and a `response` object that will be returned to the client.
     - Inside the callback:
@@ -3065,7 +3063,7 @@ ros2 topic echo /led_panel_states
 
 You should see that the LED at index 0 is now ON (`1`).
 
-![[Pasted image 20250905110209.png]]
+![Terminal](images/terminal25.png)
 
 Initially, the node publishes updates every 5 seconds, so there is a delay before changes appear on the topic. Increasing the timer frequency could reduce this delay, but that would generate unnecessary messages. A better solution is to **publish immediately within the service callback** after changing the state:
 
@@ -3084,10 +3082,9 @@ Initially, the node publishes updates every 5 seconds, so there is a delay befor
 
 This ensures that subscribers see changes as soon as the service is called, without waiting for the next timer cycle. Testing now shows that as soon as the service is executed, the updated LED state is immediately published and visible on the topic.
 
-![[Pasted image 20250905111147.png]]
+![Terminal](images/terminal26.png)
 
-
-#### **Step 3**: create the battery node and simulate the battery life
+### **Step 3**: create the battery node and simulate the battery life
 
 The Battery Node simulates a battery that alternates between "full" and "empty" states over time. Instead of publishing its state directly, the node interacts with the previously created **LED panel** node through a **service client**. Whenever the battery switches state, it calls the `/set_led` service provided by the LED panel node to update one of the LEDs. This demonstrates how services in ROS 2 allow nodes to request actions from other nodes in a clean, decoupled way.
 
@@ -3239,12 +3236,11 @@ def callback_set_led(self, future):
 
 After adding the new battery node, rebuild the workspace with `colcon build` and source it. Then run the **LED panel node** in one terminal and the **battery node** in another. In a third terminal, echo the topic `/led_panel_state` to see the results.
 
-![[Pasted image 20250905132825.png]]
+![Terminal](images/terminal27.png)
 
 You’ll notice that after about 4 seconds the battery switches to **empty**, which triggers the service call and turns LED 2 **on**. After 6 more seconds, the battery switches back to **full**, turning LED 2 **off**. This cycle repeats, showing how the battery node uses the service to update the LED panel, and the LED panel then publishes the new state on the topic.
 
-
-### Section Overview - Interfaces
+## Section Overview - Interfaces
 
 In this section the focus was on creating **custom ROS 2 interfaces** for both topics and services. While topics and services define the communication mechanism, interfaces represent the actual data being exchanged. Designing your own interfaces is essential when standard message types are not enough for a specific application.
 
@@ -3264,16 +3260,15 @@ ROS 2 supports a range of options inside interface definitions:
 - Messages imported from other packages, provided that the dependencies are declared in both `CMakeLists.txt` and `package.xml`.
 
 Custom interfaces are the building blocks of scalable systems, ensuring that the data structure is always clear, reusable, and strongly typed.
-    
 
-  
-# ROS2 Parameter
+ 
+# ROS2 Parameters
 
 Parameters in ROS 2 are a way to provide **configurable settings for nodes** without hardcoding values in the code. They make nodes flexible and reusable by allowing runtime configuration.
 
 Consider a camera driver node as an example. Such a node typically connects to a camera via USB and retrieves images. It might need several configuration values: the USB device name, the desired frame rate, whether to run in simulation mode, and more. If all of these values were hardcoded, changing them would require editing the code and potentially rebuilding the package. Running multiple instances of the node with different settings would be cumbersome, often leading to code duplication.
 
-![[Pasted image 20250905133907.png]]
+![Parameters example](images/parameters1.png)
 
 ROS 2 parameters solve this problem. A **parameter is a named, typed value attached to a specific node**. It only exists while the node is alive, and each node has its own separate set of parameters. Common parameter types include booleans, integers, doubles, strings, and arrays of these types.
 
@@ -3283,18 +3278,17 @@ Parameters are **declared in the node code**, but their values are set **at runt
 - Run multiple instances of a node with independent parameter values.
 - Quickly adjust settings such as camera FPS, device names, or simulation mode.
 
-![[Pasted image 20250905133928.png]]
+![Parameters example](images/parameters2.png)
 
 separate configuration from logic, simplify testing, and allow multiple nodes to coexist with different settings.
 
 The next step is to see parameters in action and learn how to **declare, set, and access them in Python nodes**.
 
-
-## Parameters in python node
+## Parameters in Python Node
 
 To demonstrate ROS 2 parameters, the existing `number_publisher` node is extended into a new node called `number_publisher_param`. The goal is to replace hardcoded values for the number to publish and the timer period with configurable parameters, so the node becomes flexible and can be customized at runtime.
 
-#### Original Node
+### Original Node
 
 The original node publishes a hardcoded number at a fixed interval:
 
@@ -3331,7 +3325,7 @@ if __name__ == "__main__":
 
 This node publishes the number `2` every second. While simple, any change to the number or the timer period requires modifying the code and rebuilding the package.
 
-#### Updated Node with Parameters
+### Updated Node with Parameters
 
 By introducing ROS 2 parameters, the number and timer period can be configured at runtime without touching the code:
 Well very simply put we create.
@@ -3381,13 +3375,13 @@ Key points in this updated node:
 - **Retrieving values**: `get_parameter("name").value` reads the parameter for use in the node.
 - **Dynamic configuration**: The timer period and published number now come from parameters, so different values can be set at runtime.
 
-#### Testing Parameters
+### Testing Parameters
 
 After building the package with `colcon build`, the node can be run and inspected:
 
 - Running the node normally shows the **default values**:
 
-![[Pasted image 20250905141120.png]]
+![Terminal parameters](images/terminal28.png)
 
 - Using `ros2 param list` confirms the node exposes `number` and `timer_period`.
 - Echoing the topic shows that the published number matches the default.
@@ -3397,19 +3391,19 @@ After building the package with `colcon build`, the node can be run and inspecte
 ros2 run my_py_pkg number_publisher_param --ros-args -p number:=7 -p timer_period:=0.5
 ```
 
-![[Pasted image 20250905141809.png]]
+![Terminal](images/terminal29.png)
 
 Testing with a subscriber node (e.g., `number_counter`) confirms the topic updates 
 correctly:
 
-![[Pasted image 20250905142155.png]]
+![Terminal](images/terminal30.png)
 
 
 ## YAML Parameter Files
 
 As nodes grow more complex, they often require many parameters. Typing each parameter individually with `-p` on the command line quickly becomes cumbersome, especially if you want to run multiple nodes with different configurations. YAML files solve this problem by allowing you to **store all parameters in one place** and load them at runtime.
 
-#### Creating a YAML File
+### Creating a YAML File
 
 Create a folder for your parameter files, for example:
 
@@ -3432,7 +3426,7 @@ When editing a YAML parameter file, **the structure and indentation are critical
 - `ros__parameters:` is a **special key** indicating that everything nested under it is a parameter for the node.
 - `number: 5` and `timer_period: 0.3` are the actual **parameters with their values**.
 
-#### Running the Node with a YAML File
+### Running the Node with a YAML File
 
 Start the node and load the parameters from the YAML file:
 
@@ -3440,11 +3434,11 @@ Start the node and load the parameters from the YAML file:
 ros2 run my_py_pkg number_publisher_param --ros-args --params-file /home/ws/yaml_params/number_params.yaml
 ```
 
-![[Pasted image 20250908104916.png]]
+![Terminal](images/terminal31.png)
 
 The node now uses the values defined in the YAML file. You can echo the topic to verify that the parameters are applied correctly.
 
-#### Multiple Nodes and Parameter Sets
+### Multiple Nodes and Parameter Sets
 
 You can define multiple nodes in the same YAML file:
 
@@ -3466,7 +3460,6 @@ If the node name in the YAML file is different from the default node name, remap
 ros2 run my_py_pkg number_publisher_param --ros-args -r __node:=number_publisher_param2 --params-file /home/ws/yaml_params/number_params.yaml
 ```
 
-
 ## Activity 5.0
 
 **1. Robot News Node**
@@ -3479,14 +3472,13 @@ ros2 run my_py_pkg number_publisher_param --ros-args -r __node:=number_publisher
 
 . This makes it possible to launch multiple instances of the node with different names without modifying the code.
 
-
 **2. LED Panel Node**  
+
 Next, return to the `led_panel_node`, where an integer array represents the states of your LEDs (0 for powered off, 1 for powered on). Replace the hardcoded LED states with a parameter called `led_states`.
 
 Then, create a YAML file to store this parameter and load it at runtime when starting the node. This approach allows you to easily configure different LED states without touching the code, and makes the node reusable and flexible for multiple scenarios.
 
 ## Solution 5.0
-
 
 **1. Robot News Node - Solution
 
@@ -3537,7 +3529,7 @@ ros2 param get /robot_news_station robot_name
 
 The default value `C3PO` will appear. 
 
-![[Pasted image 20250908112729.png]]
+![Terminal](images/terminal32.png)
 
 To provide a different robot name at runtime, use:
 
@@ -3559,14 +3551,13 @@ ros2 run my_py_pkg robot_news_station --ros-args -r __node:=station1 -p robot_na
 ros2 run my_py_pkg robot_news_station --ros-args -r __node:=station2 -p robot_name:=Jimmy
 ```
 
-![[Pasted image 20250908113552.png]]
+![Terminal](images/terminal33.png)
 
-![[Pasted image 20250908113646.png]]
+![Terminal](images/terminal34.png)
 
 Each node instance maintains its own set of parameters, which can be verified using `ros2 param list` and `ros2 param get`. This approach allows multiple configurable nodes to run simultaneously without changing the source code.
 
-![[Pasted image 20250908113834.png]]
-
+![Terminal](images/terminal35.png)
 
 **2. LED Panel Node** - Solution
 
@@ -3635,7 +3626,7 @@ ros2 param list
 ros2 param get /led_panel led_state
 ```
 
-![[Pasted image 20250908114627.png]]
+![Terminal](images/terminal36.png)
 
 To override the default states at runtime, provide the parameter when starting the node:
 
@@ -3643,7 +3634,7 @@ To override the default states at runtime, provide the parameter when starting t
 ros2 run my_py_pkg led_panel --ros-args -p led_state:="[0, 0, 0, 0, 0]"
 ```
 
-![[Pasted image 20250908114937.png]]
+![Terminal](images/terminal37.png)
 
 You can also specify a YAML file for configuration. Create a file, for example `led_config.yaml`, with the following structure:
 
@@ -3671,7 +3662,7 @@ ros2 run my_py_pkg number_publisher_param
 
 If we check the parameter list:
 
-![[Pasted image 20250908120619.png]]
+![Terminal](images/terminal38.png)
 
 We see the node publishes `2` every second. Now let’s try to change the parameter while the node is running:
 
@@ -3679,7 +3670,7 @@ We see the node publishes `2` every second. Now let’s try to change the parame
 ros2 param set /number_publisher_param number 9
 ```
 
-![[Pasted image 20250908120840.png]]
+![Terminal](images/terminal39.png)
 
 However, if we echo the topic, it still publishes `2`. This is because the node only reads the parameter at startup. To update the value at runtime, we need a **parameter callback** function.
 
@@ -3735,7 +3726,7 @@ if __name__ == "__main__":
     main()
 ```
 
-#### Parameter Callback Explanation
+### Parameter Callback Explanation
 
 The `parameters_callback` method is called automatically whenever one or more parameters of the node are changed at runtime. It receives a list of `Parameter` objects representing the changed parameters. Inside the callback, we loop through the list and check the name of each parameter. If the name is `"number"`, we update `self.number_` with the new value. This ensures that the node immediately uses the updated number in its next published message, without needing to restart the node.
 
@@ -3751,7 +3742,7 @@ ros2 param set /number_publisher_param number 9
 
 The topic immediately starts publishing the new value:
 
-![[Pasted image 20250908123059.png]]
+![Terminal](images/terminal40.png)
 
 ## Section Overview - Parameters
 
@@ -3778,9 +3769,9 @@ ros2 launch <package_name> <launch_file_name>.launch.xml
 
 From that single command, all your nodes are started together with the correct parameters, topic remappings, namespaces, and configurations. This ensures a clean, consistent startup every time you run your system.
 
-![[Pasted image 20250908151215.png]]
+![Launch file ](images/launch_file.png)
 
-### Key Advantages of ROS 2 Launch Files
+## Key Advantages of ROS 2 Launch Files
 
 - Start multiple nodes at once with a single command.
 - Pass parameters directly or load them from YAML configuration files.
@@ -3898,7 +3889,7 @@ ros2 launch my_robot_bringup number_app.launch.xml
 
 When you start the launch file, you’ll see logs like this:
 
-![[Pasted image 20250908154925.png]]
+![Terminal](images/terminal41.png)
 
 - Each executable that starts is listed with its **process ID (PID)**.
 - Logs from your nodes are displayed directly.
@@ -3906,7 +3897,7 @@ When you start the launch file, you’ll see logs like this:
 
 If you open another terminal and echo the topics, you’ll see that everything works as expected.
 
-![[Pasted image 20250908155241.png]]
+![Terminal](images/terminal42.png)
 
 ## Python Launch Files
 
@@ -3958,7 +3949,7 @@ def generate_launch_description():
 
 This launch file does exactly the same as the XML version we wrote earlier: it starts the **number publisher** and **number counter** nodes. As you can see, the Python version is more verbose than XML, so we’ll generally stick to XML for clarity.
 
-### Include a Python Launch File in XML
+## Include a Python Launch File in XML
 
 One of the advantages of XML launch files is that they can **include** Python launch files. This way, you can still use Python’s flexibility when needed while keeping the main entry point simple.
 
@@ -3994,7 +3985,7 @@ Run the Python launch file directly:
 ros2 launch my_robot_bringup number_app.launch.py
 ```
 
-![[Pasted image 20250908165557.png]]
+![Terminal](images/terminal43.png)
 
 Run the XML file that includes the Python one:
 
@@ -4002,10 +3993,9 @@ Run the XML file that includes the Python one:
 ros2 launch my_robot_bringup number_app_from_python.launch.xml
 ```
 
-![[Pasted image 20250908165701.png]]
+![Terminal](images/terminal44.png)
 
 Both produce the exact same result.
-
 
 ## Remapping in a Launch file
 
@@ -4030,7 +4020,7 @@ To rename a node in a launch file, simply add the `name` attribute:
 
 After saving, rebuild the bringup package. Then run the launch file. You’ll see that the `number_publisher_param` node is now renamed:
 
-![[Pasted image 20250909094410.png]]
+![Terminal](images/terminal45.png)
 
 ### Remapping a Topic in XML
 
@@ -4054,7 +4044,7 @@ Here’s the important part:
 
 Now save, build, and run again. Both nodes now talk over `/New_Topic`:
 
-![[Pasted image 20250909095309.png]]
+![Terminal](images/terminal46.png)
 
 ### Remapping in Python
 
@@ -4090,6 +4080,7 @@ def generate_launch_description():
     return ld    
 ```
 
+
 ## Load Parameters in Launch File
 
 We can set parameters one by one or load them directly from a YAML file that we will install inside the `my_robot_bringup` package.
@@ -4117,7 +4108,7 @@ Now let’s do the same thing inside the XML launch file. In `number_publisher_p
 
 Save, build, and launch. The node will now use the provided parameter values.
 
-![[Pasted image 20250909101649.png]]
+![Terminal](images/terminal47.png)
 
 ### Loading Parameters from a YAML File in XML
 
@@ -4160,7 +4151,7 @@ Finally, load this YAML file in the launch file with:
 
 Now, when you launch it, parameters are pulled from the YAML file:
 
-![[Pasted image 20250909103441.png]]
+![Terminal](images/terminal48.png)
 
 ### Python Launch File
 
@@ -4247,7 +4238,7 @@ ros2 run my_py_pkg number_publisher
 
 If you check with `ros2 node list` and `ros2 topic list`, you will see that the node appears as `/number_publisher` and it publishes on the `/number` topic.
 
-![[Pasted image 20250909105852.png]]
+![Terminal](images/terminal49.png)
 
 Now stop the node and start it again, this time adding a namespace:
 
@@ -4257,7 +4248,7 @@ os2 run my_py_pkg number_publisher --ros-args -r __ns:=/test
 
 Checking the node and topic list again shows that both the node and the topic now live under the `/test` namespace.
 
-![[Pasted image 20250909110110.png]]
+![Terminal](images/terminal50.png)
 
 Notice how ROS 2 automatically places a leading slash in front of all names. If you specify a name with a leading slash directly in your code, that name becomes **absolute** and will not be affected by namespaces. Otherwise, namespaces prepend automatically.
 
@@ -4275,10 +4266,11 @@ Since most applications are launched through launch files, let’s see how to ap
 
 After saving, building, and running this file, open RQT Graph:
 
-![[Pasted image 20250909111929.png]]
+![Terminal](images/terminal51.png)
+
 Here you’ll notice a mismatch. The node `ABC/New_Node_name` is publishing to `ABC/number`, while `number_counter` is still subscribing to `/New_Topic`. Because of the leading slash in the remap rule, the subscriber cannot connect.
 
-![[Pasted image 20250909112323.png]]
+![RQT](images/rqt_7.png)
 
 The fix is simple: remove the slashes in the remap so that remapping respects the namespace.
 
@@ -4306,7 +4298,7 @@ So the complete XML file now looks like this, with the namespace `/ABC` applied 
 
 Now save, build, and run it. When you open the RQT graph, you’ll see that everything is correctly connected and communicating as expected.
 
-![[Pasted image 20250909113004.png]]
+![RQT](images/rqt_7.png)
 
 Adding a namespace in Python is just as easy. The only important thing is to remove the slash in the remapping so it works correctly with the namespace:
 
@@ -4338,8 +4330,118 @@ Launch files are not just a convenience—they are an essential tool for keeping
 
 ## Activity 6.0
 
+n this activitn this activity you will practice by creating a new launch file, with the nodes that you’ve already created during this course.
+
+Goal:
+
+- Start 5 “robot_news_station” nodes and 1 smartphone node.
+    
+- Each “robot_news_station” will need a different name, and will publish "Hi, this is <robot_name> from the Robot News Station!"
+    
+- The “smartphone” node gets all the messages from all other nodes.
+    
+
+Here’s the graph you should get:y you will practice by creating a new launch file, with the nodes that you’ve already created during this course.
+
+Goal:
+
+- Start 5 “robot_news_station” nodes and 1 smartphone node.
+    
+- Each “robot_news_station” will need a different name, and will publish "Hi, this is <robot_name> from the Robot News Station!"
+    
+- The “smartphone” node gets all the messages from all other nodes.
+    
+
+Here’s the graph you should get:
+
+![RQT](images/rqt_9.png)
+
+So, no need to create or modify any node here. You just need to create a single launch file.
+
+You can start by providing the parameters one by one in the launch file, and then load them from a YAML file.
+
+I’ll see you in the next lecture for the solution.
+
+Bonus point if you find the book/movie reference for all robot names! (shouldn’t be too hard).
+
 ## Solution 6.0
 
-# Final Project
+so in the file my_robot_bringup and inside a folder launch we will make a new xml launch file called, radio.launch.xml then we init the file just by putting in the correct tags.
 
-# Table of Contents
+lest edit the launch file now:
+```xml
+<launch>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Tesla">
+        <param name="robot_name" value="Tesla"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Pen">
+        <param name="robot_name" value="Pen"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Croc">
+        <param name="robot_name" value="Croc"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Bantha">
+        <param name="robot_name" value="Bantha"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Dansk">
+        <param name="robot_name" value="Dansk"/>
+    </node>
+    <node pkg="my_py_pkg" exec="smartphone"/>
+</launch>
+```
+
+then colcon build and run he launch file and run rqt grapoh and you will see:
+
+![[rqt_9.png]]
+
+We can also load parameters inside the YAML file. So inside the config file lets make a new file called, radio_config.yaml. there we are going to all the paramters.
+
+```yaml
+<launch>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Tesla">
+        <param name="robot_name" value="Tesla"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Pen">
+        <param name="robot_name" value="Pen"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Croc">
+        <param name="robot_name" value="Croc"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Bantha">
+        <param name="robot_name" value="Bantha"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Dansk">
+        <param name="robot_name" value="Dansk"/>
+    </node>
+    <node pkg="my_py_pkg" exec="smartphone"/>
+</launch>
+```
+
+so since we have alredy installed the config folder inside the cmakelist it is goign to be installed automaticly. 
+
+we just need to update the laucnh file:
+
+```xml
+<launch>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Tesla">
+        <param from="$(find-pkg-share my_robot_bringup)/config/radio_config.yaml"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Pen">
+        <param from="$(find-pkg-share my_robot_bringup)/config/radio_config.yaml"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Croc">
+        <param from="$(find-pkg-share my_robot_bringup)/config/radio_config.yaml"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Bantha">
+        <param from="$(find-pkg-share my_robot_bringup)/config/radio_config.yaml"/>
+    </node>
+    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Dansk">
+        <param from="$(find-pkg-share my_robot_bringup)/config/radio_config.yaml"/>
+    </node>
+    <node pkg="my_py_pkg" exec="smartphone"/>
+</launch>
+```
+
+explain a bit:
+
+![Terminal example](images/terminal52.png)
