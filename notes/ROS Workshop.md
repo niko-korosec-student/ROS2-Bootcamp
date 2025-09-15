@@ -131,14 +131,6 @@ By the end of this step, you will have a ready-to-use development environment wh
 
 To set up a ROS 2 workspace that can be built and accessed inside a Docker container, follow these steps:
 
-**ws 
-├── .devcontainer 
-│ ├── devcontainer.json 
-│ └── Dockerfile 
-├── src 
-├── package1 
-└── package2**
-
 ```bash
 //Create the workspace directory structure:
 cd ~/
@@ -431,7 +423,6 @@ ros2 run demo_nodes_cpp talker
 
 If the command executes without errors, your containerized workspace is correctly set up and ready for development.
 
-
 # Workspace Initialization
 
 Once the container is running, there are a few important steps to prepare your development environment. These include verifying the container, setting up version control, and ensuring your ROS 2 workspace is built and sourced correctly.
@@ -461,7 +452,6 @@ Since we’ve already set up **automated sourcing** with `setup_ws.sh`, the work
 ```
 . ./setup_ws.sh   # optional if you want to manually source
 ```
-
 
 ## Setup Git Repository
 
@@ -582,7 +572,7 @@ Imagine a robot with a camera and wheels:
     - `main_control_node` → executes motion commands from the planner.
     - `state_publisher_node` → publishes the robot’s current status.
 
-![Packages](packages.png)
+![Packages](images/packages.png)
 
 Nodes form a **graph of programs** that communicate with each other using **ROS 2 Topics, Services, and Parameters**. The benefits of using nodes include:
 
@@ -653,7 +643,6 @@ if __name__ == "__main__":
 **Tip:** If you’re unsure about Python syntax or OOP, check a Python cheat sheet for reference.
 
 ![[Python_cheatsheet_FULL.pdf]]
-
 ## Template Node
 
 This simplified version is essentially a **template for new nodes**. It shows the minimal structure needed to create a ROS 2 Python node using object-oriented programming. The `MyNode` class inherits from `Node`, and the `main()` function handles initialization, spinning, and shutdown. You can copy this template and extend it with publishers, subscribers, timers, or custom logic for any new node you want to create.
@@ -933,7 +922,7 @@ Open **RQT Graph**:
 rqt_graph
 ```
 
-![RQT graph](rqt_graph.png)
+![RQT graph](images/rqt_graph.png)
 
 You will now see how nodes interact and communicate via topics, providing a real-time view of the ROS 2 graph.
 
@@ -1171,7 +1160,7 @@ ros2 topic echo /robot_news
 
 You will see output like this, updated in real time every time the publisher sends a message:
 
-![Echo](terminal1.png)
+![Echo](images/terminal1.png)
 
 This confirms that your publisher is actively sending messages on the robot_news topic, and any subscriber to this topic would receive the same data.
 
@@ -1267,7 +1256,7 @@ ros2 run my_py_pkg smartphone
 
 As soon as the subscriber starts, it will automatically begin listening to the `robot_news` topic. You should immediately see the messages from the publisher appear in the subscriber’s terminal. Each message corresponds to the data being published, demonstrating that information is flowing from one node to another in real time.
 
-![Run](terminal2.png)
+![Run](images/terminal2.png)
 
 This setup illustrates a core concept in ROS 2: **asynchronous communication via topics**. The publisher and subscriber do not need to know about each other directly—they only communicate through the topic. You can even run multiple subscribers or publishers on the same topic, and all of them will exchange data seamlessly. Watching the messages appear live helps reinforce how nodes interact in a modular, scalable ROS 2 system.
 
@@ -1381,7 +1370,6 @@ If you now open **RQT Graph**, you’ll see how the communication looks: the tel
 
 ![RQT turtlesim](images/rqt_4.png)
 
-
 For example, running `ros2 node list` shows all active nodes. 
 
 ![[terminal3.png]]
@@ -1410,7 +1398,6 @@ ros2 topic info /turtle1/cmd_vel
 ```
 
 ![topic info](images/terminal5.png)
-
 
 This tells us the message type and how many publishers and subscribers are connected. Since this topic uses a `Twist` message, we can inspect its structure:
 
@@ -1747,7 +1734,6 @@ Each service has a **unique name** and defines two message types: one for the **
 In short, **topics** are for streaming continuous data, while **services** are for controlled interactions where nodes ask for something and wait for a reply, making them essential for interactive and responsive robotic behaviours.
 
 ![Multiple service client demo](images/Service-MultipleServiceClient.gif)
-
 
 ## Robotics Example: Controlling an LED Panel
 
@@ -4445,3 +4431,7 @@ we just need to update the laucnh file:
 explain a bit:
 
 ![Terminal example](images/terminal52.png)
+
+
+# Project with Turtlesim
+
