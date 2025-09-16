@@ -1372,7 +1372,7 @@ If you now open **RQT Graph**, you’ll see how the communication looks: the tel
 
 For example, running `ros2 node list` shows all active nodes. 
 
-![[terminal3.png]]
+![terminal](images/terminal3.png)
 
 To get more details about a specific node, such as what topics it publishes and subscribes to, you can run:
 
@@ -1389,7 +1389,6 @@ ros2 topic list
 ```
 
 ![Topic list](images/terminal4.png)
-
 
 If we look specifically at the command velocity topic, we can ask for more info:
 
@@ -1734,6 +1733,7 @@ Each service has a **unique name** and defines two message types: one for the **
 In short, **topics** are for streaming continuous data, while **services** are for controlled interactions where nodes ask for something and wait for a reply, making them essential for interactive and responsive robotic behaviours.
 
 ![Multiple service client demo](images/Service-MultipleServiceClient.gif)
+
 
 ## Robotics Example: Controlling an LED Panel
 
@@ -4316,45 +4316,33 @@ Launch files are not just a convenience—they are an essential tool for keeping
 
 ## Activity 6.0
 
-n this activitn this activity you will practice by creating a new launch file, with the nodes that you’ve already created during this course.
+In this activity, you will practice creating a new **launch file** using the nodes you’ve already developed in this course.
 
-Goal:
+**Goal**
 
-- Start 5 “robot_news_station” nodes and 1 smartphone node.
-    
-- Each “robot_news_station” will need a different name, and will publish "Hi, this is <robot_name> from the Robot News Station!"
-    
-- The “smartphone” node gets all the messages from all other nodes.
-    
-
-Here’s the graph you should get:y you will practice by creating a new launch file, with the nodes that you’ve already created during this course.
-
-Goal:
-
-- Start 5 “robot_news_station” nodes and 1 smartphone node.
-    
-- Each “robot_news_station” will need a different name, and will publish "Hi, this is <robot_name> from the Robot News Station!"
-    
-- The “smartphone” node gets all the messages from all other nodes.
-    
+- Start **5 `robot_news_station` nodes** and **1 `smartphone` node**.
+- Each `robot_news_station` node will have a **unique name** and publish messages in the form: “Hi, this is `<robot_name>` from the Robot News Station!”_
+- The `smartphone` node will receive messages from all `robot_news_station` nodes.
 
 Here’s the graph you should get:
 
 ![RQT](images/rqt_9.png)
 
-So, no need to create or modify any node here. You just need to create a single launch file.
+You don’t need to create or modify any node for this activity.  
+The task is simply to create a **single launch file** that starts all the required nodes.
 
-You can start by providing the parameters one by one in the launch file, and then load them from a YAML file.
-
-I’ll see you in the next lecture for the solution.
-
-Bonus point if you find the book/movie reference for all robot names! (shouldn’t be too hard).
+You can begin by providing the parameters directly in the launch file, and then improve it by loading them from a **YAML configuration file**.
 
 ## Solution 6.0
 
-so in the file my_robot_bringup and inside a folder launch we will make a new xml launch file called, radio.launch.xml then we init the file just by putting in the correct tags.
+Inside the `my_robot_bringup` package, in the **launch** folder, create a new XML launch file:
 
-lest edit the launch file now:
+```bash
+touch radio.launch.xml
+```
+
+We can first write a basic version of the launch file with the parameters defined inline. Each `robot_news_station` gets its own name through the `robot_name` parameter, and the `smartphone` node subscribes to all of them:
+
 ```xml
 <launch>
     <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Tesla">
@@ -4376,36 +4364,41 @@ lest edit the launch file now:
 </launch>
 ```
 
-then colcon build and run he launch file and run rqt grapoh and you will see:
+After building and launching this file, opening `rqt_graph` will show five publishers (`robot_news_station_*`) all connected to a single subscriber (`smartphone`):
 
-![[rqt_9.png]]
+![RQT](images/rqt_9.png)
 
-We can also load parameters inside the YAML file. So inside the config file lets make a new file called, radio_config.yaml. there we are going to all the paramters.
+To make things more scalable, instead of keeping all parameters inline in the XML file, we can move them to a YAML configuration file. Inside the `config` folder, create a new file called `radio_config.yaml`
 
+```bash
+touch radio_config.yaml
+```
+
+ And edit it as follows:
+ 
 ```yaml
-<launch>
-    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Tesla">
-        <param name="robot_name" value="Tesla"/>
-    </node>
-    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Pen">
-        <param name="robot_name" value="Pen"/>
-    </node>
-    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Croc">
-        <param name="robot_name" value="Croc"/>
-    </node>
-    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Bantha">
-        <param name="robot_name" value="Bantha"/>
-    </node>
-    <node pkg="my_py_pkg" exec="robot_news_station" name="robot_news_station_Dansk">
-        <param name="robot_name" value="Dansk"/>
-    </node>
-    <node pkg="my_py_pkg" exec="smartphone"/>
-</launch>
+/robot_news_station_Tesla:
+  ros__parameters:
+    robot_name: "Tesla"
+
+/robot_news_station_Pen:
+  ros__parameters:
+    robot_name: "Pen"
+  
+/robot_news_station_Croc:
+  ros__parameters:
+    robot_name: "Croc"
+
+/robot_news_station_Bantha:
+  ros__parameters:
+    robot_name: "Bantha"
+
+/robot_news_station_Dansk:
+  ros__parameters:
+    robot_name: "Dansk"
 ```
 
-so since we have alredy installed the config folder inside the cmakelist it is goign to be installed automaticly. 
-
-we just need to update the laucnh file:
+Since the `config` folder is already installed through the `CMakeLists.txt`, this file will be available automatically. We can now update the launch file so that each node loads its parameters directly from the YAML:
 
 ```xml
 <launch>
@@ -4428,10 +4421,1627 @@ we just need to update the laucnh file:
 </launch>
 ```
 
-explain a bit:
+When launching this updated version, everything works the same way, but now the node configuration is centralized in a single YAML file. This makes it easier to adjust or extend later, for example by adding more robots or changing their names without touching the launch XML.
 
 ![Terminal example](images/terminal52.png)
 
+We built a launch file that starts five `robot_news_station` nodes and one `smartphone` node. Each robot has its own unique name and message, and all messages flow into the `smartphone`. By moving the parameters into a YAML file, we made the setup flexible and easy to maintain, adding or renaming robots now takes only a small change in one config file.
 
-# Project with Turtlesim
 
+# Final Project
+
+Time to put everything together! You’ll use **Turtlesim** as your robot so you can actually _see_ what’s happening on screen. The goal is to combine all the things you’ve learned, nodes, topics, services, parameters, YAML, launch files, and RQT, into one working project.
+
+![Catch them all demo](images/catch_all.gif)
+
+Don’t worry if it feels bigger than previous exercises. That’s normal. Just go step by step, and look back at earlier chapters whenever you get stuck.
+
+## How to Begin
+
+First, don’t write any code.
+
+Grab a piece of paper and sketch:
+
+- Which nodes do we need? 
+- What topics will they use?
+- Which services should they call?    
+- What should be configurable with parameters?
+
+## Some tips to help you get started
+
+- `turtlesim_node` → comes with the package.
+- `turtle_controller` → controls the default turtle (`turtle1`).
+- `turtle_spawner` → spawns extra turtles and keeps track of them.
+
+You can make a new package, `turtlesim_catch_them_all`, for your nodes.
+
+### The turtle_spawner Node
+
+This node is in charge of managing all the extra turtles in the simulation. Its responsibilities are:
+
+- **Spawn turtles:**  
+    It calls the `/spawn` service (already provided by `turtlesim_node`) to create new turtles.
+    - The spawn coordinates (`x`, `y`) should be random values between `0.0` and `11.0`.
+    - The orientation (`theta`) should also be random, between `0` and `2π`.
+- **Remove turtles:**  
+    It calls the `/kill` service (also provided by `turtlesim_node`) to delete turtles from the window.
+- **Keep track of alive turtles:**  
+    It publishes an array with the names and coordinates of all currently alive turtles on the topic `/alive_turtles`. This gives other nodes, like the controller, up-to-date info about which turtles exist and where they are.
+- **Provide a service server:**  
+    It implements a `/catch_turtle` service. When another node (e.g. the controller) requests this service with the name of a turtle, the spawner calls `/kill` to remove that turtle and also updates the list of alive turtles.
+
+### The turtle_controller Node
+
+This node controls the movement of the default turtle (`turtle1`) so it can “catch” the other turtles. Its tasks are:
+
+- **Control loop:**  
+    Runs a regular loop (e.g. with a timer at high frequency) to update turtle commands continuously, rather than relying only on incoming messages.
+- **Subscribe to pose:**  
+    Subscribes to `/turtle1/pose` to always know the current position and orientation of the master turtle.
+- **Publish velocity commands:**  
+    Publishes to `/turtle1/cmd_vel` to move the turtle toward a target.
+- **Use a P controller:**  
+    Implements a proportional controller for both linear and angular velocities.
+    - The farther the turtle is from the target, the faster it moves.
+    - The bigger the angular difference, the stronger the rotation command.
+- **Get targets from alive turtles:**  
+    Subscribes to `/alive_turtles` to receive the list of turtles on the screen. From that list it chooses a target turtle (first in the list, or later the closest one).
+- **Catch turtles:**  
+    Once `turtle1` reaches the target, the node calls the `/catch_turtle` service (advertised by the spawner). This removes the caught turtle and updates the alive list.
+### Custom Interfaces
+
+To connect these two nodes smoothly, you’ll need custom message and service definitions:
+
+- **`Turtle.msg`** → Holds one turtle’s data: `name`, `x`, `y`, `theta`.
+- **`TurtleArray.msg`** → Holds an array of `Turtle` messages to represent all alive turtles.
+- **`CatchTurtle.srv`** → Request: turtle name. Response: success flag.
+    - Client = `turtle_controller` (asks to remove a turtle).
+    - Server = `turtle_spawner` (kills turtle and updates list).        
+    
+You can add these interfaces in your `my_robot_interfaces` package.
+
+### The System Graph
+
+Here’s the expected structure of nodes, topics, and services in `rqt_graph`:
+
+![rqt graph](images/rqt_10.png)
+
+After you’ve created that, you will be able to scale the application with parameters and launch files. This will be the focus on the last part of the solution.
+
+### Parameters
+
+To make the project configurable, add parameters to both nodes:
+
+- **`/turtle_controller`:**
+    - `catch_closest_turtle_first` → if true, always select the nearest turtle as the target instead of just the first in the list.
+- **`/turtle_spawner`:**
+    - `spawn_frequency` → how often new turtles are spawned.
+    - `turtle_name_prefix` → prefix to give names like `turtle2`, `turtle3`, etc.
+  
+### Launch & YAML
+
+Finally, you can create a launch file (and optional YAML config file) inside your `my_robot_bringup` package. This will start:
+
+- `turtlesim_node`
+- `turtle_controller` with its parameters
+- `turtle_spawner` with its parameters
+
+### Project Steps
+
+**Step 1: Build the `turtle_controller` node**
+
+- Subscribe to `/turtle1/pose` to get the position and orientation of the default turtle.
+- Create a control loop (using a timer with a high frequency).
+- Compute the distance and angle between the turtle and an arbitrary target.
+- Use that math to generate velocity commands.
+- Publish commands to `/turtle1/cmd_vel` to move the turtle toward the target.
+
+**Step 2: Build the `turtle_spawner` node**
+
+- Create a timer that spawns turtles at a fixed rate.
+- Call the `/spawn` service to create new turtles at random `(x, y, theta)` positions.
+
+**Step 3: Track alive turtles**
+
+- In the `turtle_spawner`, maintain an array of turtles (names + coordinates).
+- Publish this array on the `/alive_turtles` topic.
+- In the `turtle_controller`, subscribe to `/alive_turtles` and pick one turtle (for now the first in the array) as the target.
+
+**Step 4: Catch turtles**
+
+- Add a `/catch_turtle` service to the `turtle_spawner`.
+- When the controller reaches its target, it calls this service with the turtle’s name.
+- The `turtle_spawner` then:
+    - Calls `/kill` to remove the turtle from the simulation.
+    - Removes the turtle from the alive list.
+    - Publishes the updated list on `/alive_turtles`.
+
+**Step 5: Improve the controller**
+
+- Instead of picking the **first turtle** in the list, calculate distances to all turtles.
+- Always choose the **closest turtle** as the next target.
+
+**Step 6: Add parameters & automation**
+
+- Add parameters to make the system flexible:
+    - `spawn_frequency`, `turtle_name_prefix` (in spawner).
+    - `catch_closest_turtle_first` (in controller).
+- Create a YAML file to store these parameter values.
+- Write a launch file to start:
+    - `turtlesim_node`
+    - `turtle_spawner` (with parameters)
+    - `turtle_controller` (with parameters)
+
+
+## Step 1: Create the Turtle Controller
+
+First, let’s just run the `turtlesim_node` to see what topics are available.
+
+![terminal](images/terminal53.png)
+
+We can see:
+
+- We need to **publish** to `/turtle1/cmd_vel` to send velocity commands.
+- The turtle will **publish** its current position on `/turtle1/pose`.
+
+If we open up **rqt_graph**, the picture is even clearer:
+
+![rqt graph](images/rqt_11.png)
+
+So the controller node needs two things:
+
+- A **subscriber** to `/turtle1/pose`.
+- A **publisher** to `/turtle1/cmd_vel`.
+
+This gives us everything we need to create a control loop.
+
+### Create a new package
+
+Let’s create a clean package for this final project:
+
+```bash
+ros2 pkg create turtlesim_catch_them_all --build-type ament_python --dependencies rclpy turtlesim
+```
+
+We added dependencies on `rclpy` (Python client library) and `turtlesim`.
+
+Inside the package folder:
+
+```bash
+cd~/ws/src/turtlesim_catch_them_all/turtlesim_catch_them_all
+
+touch turtle_controller.py
+chmod +x turtle_controller.py
+```
+
+Now let’s edit this file. The main goal is to create a **subscriber** to the `/turtle1/pose` topic and a **publisher** to the `/turtle1/cmd_vel` topic. These two topics give us everything we need: the turtle’s current position (pose) and a way to send velocity commands.
+
+![terminal](images/terminal54.png)
+### Understanding the math
+
+We need to compute two things in the control loop:
+
+1. **Distance to the target**  
+    We use the Pythagorean theorem. If the differences are `dist_x` and `dist_y`, then:
+    
+    $c = \sqrt{dist_x^2 + dist_y^2}$
+
+![distance](images/teleop5.png)
+
+This tells us how far the turtle is from the goal.
+
+2. **Angle to the target**  
+	Next, we compute the angle the turtle should face. Using trigonometry:
+    
+	$\theta = \arctan\left(\frac{dist_y}{dist_x}\right)$
+	
+In Python we use `math.atan2(dist_y, dist_x)` because it correctly handles all quadrants.
+
+![angle](images/teleop6.png)
+
+![tan](images/tan.png)
+
+3. **Error in orientation**:  
+    The turtle already has its own orientation (`pose.theta`). The difference between the desired angle (`goal_theta`) and the current angle gives us how much to turn.  
+    We normalize this difference so it always stays between `-π` and `+π`, which prevents the turtle from spinning the long way around.
+
+Lets edit the controller code now:
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+# added dependencies (package.xml)
+import math
+from turtlesim.msg import Pose
+from geometry_msgs.msg import Twist
+
+class TurtleControllerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_contorller") 
+		# Temporary target destination (hardcoded for now)
+        self.target_x = 16.0
+        self.target_y = 4.0
+        # Pose of the turtle (will be updated by subscriber callback)
+        self.pose_: Pose = None
+		# Subscriber: listen to the turtle's current pose
+        # Topic name must be exact, otherwise it won’t work
+        self.pose_subscriber_ = self.create_subscription(Pose, "/turtle1/pose", self.callback_pose, 10)
+        # Publisher: send velocity commands to control the turtle
+        self.cmd_vel_publisher_ = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+        # Control loop: runs independently of callbacks
+        # Timer set at 0.01s → ~100Hz
+        self.control_loop_timer_ = self.create_timer(0.01, self.control_loop) #100hz
+        
+        
+    def callback_pose(self, pose:Pose):
+	    # Update the current pose whenever a new message is received
+        self.pose_ = pose
+        
+    # Main control loop for the turtle
+    # Important: we use our own loop instead of relying only on subscriber callback frequency
+    # This avoids synchronization issues and keeps control smooth
+    def control_loop(self): # P control
+        #first we need to compute difference between TARGET and CURRENT POSE
+        if self.pose_ == None:
+            return 
+        # Compute distance (Pythagoras) from current pose to target
+        dist_x = self.target_x - self.pose_.x
+        dist_y = self.target_y - self.pose_.y
+        distance = math.sqrt(pow(dist_x, 2) + pow(dist_y, 2))
+        
+        # Twist message = linear + angular velocities
+        cmd = Twist()
+        
+        if distance > 0.5:
+            #closer the turtle slower it moves (Simple control)
+            #position
+            cmd.linear.x = float(2 * distance) # 2 for P control
+            
+            #angle
+            goal_theta = math.atan2(dist_y, dist_x)
+            diff = goal_theta - self.pose_.theta
+            
+            #this makes sure that angle is between - and + pi (180deg) 
+            if diff > math.pi:
+                diff -= 2*math.pi
+            elif diff < -math.pi:
+                diff += 2*math.pi
+            
+            # Angular control: proportional to angle difference
+            cmd.angular.z = float(6 * diff) # 6 for P control
+            
+        else:
+            #target reached
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.0
+            #only use those 2 since it is 2D
+            
+        # Publish velocity command    
+        self.cmd_vel_publisher_.publish(cmd)        
+        
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleControllerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+- **Constructor (`__init__`)**
+    - Hardcodes a target `(x, y)` for testing.
+    - Creates a subscriber to `/turtle1/pose`.
+    - Creates a publisher to `/turtle1/cmd_vel`.
+    - Starts a **control loop** running at 100Hz using a timer.
+- **`callback_pose`**
+    - Updates the stored pose every time a new `/pose` message is received.
+- **`control_loop`**
+    - Waits until at least one pose is received.
+    - Computes distance to the target using Pythagoras.
+    - Uses a **proportional (P) controller**:
+        - Linear speed ∝ distance.
+        - Angular speed ∝ orientation error.
+    - Normalizes the angle difference to avoid rotating the long way around.
+    - Stops the turtle when it is closer than 0.5 units.
+    - Publishes the command to `/turtle1/cmd_vel`. 
+
+### Add entry point in `setup.py`
+
+To make our new node executable from the terminal, we need to add an **entry point**:
+
+```python
+    entry_points={
+        'console_scripts': [
+            "controller = turtlesim_catch_them_all.turtle_controller:main"
+        ],
+    },
+```
+
+This way, `ros2 run turtlesim_catch_them_all controller` will directly start our `turtle_controller` node.
+
+Now save everything and build with symlink install (so code changes apply immediately without rebuilding all):
+
+```bash
+colcon build --packages-select turtlesim_catch_them_all --symlink-install
+```
+
+Now run the nodes. In one terminal, start turtlesim: 
+
+```bash
+ros2 run turtlesim turtlesim_node
+```
+
+In a second terminal, run the controller: 
+
+```bash
+ros2 run turtlesim_catch_them_all controller
+```
+
+![terminal](images/terminal55.png)
+
+Now, let’s change the target coordinates inside `turtle_controller.py`.
+
+```python
+self.target_x = 8.0
+self.target_y = 4.0
+
+to...
+
+self.target_x = 4.0
+self.target_y = 2.0
+```
+
+Keep `turtlesim_node` running in the first terminal. Then re-save the controller code and restart it in the second terminal:
+
+![terminal](images/terminal56.png)
+
+The turtle now moves toward the **new position**. No changes needed in `turtlesim_node`, only in the controller.
+
+
+## Step 2: Spawning Turtles
+
+Now that we can move `turtle1` to a target, the next step is to **spawn additional turtles** on the `turtlesim_node`. These will be the turtles that `turtle1` has to catch.
+
+First, let’s start `turtlesim_node` in one terminal:
+```bash
+ros2 run turtlesim turtlesim_node
+```
+
+Then, in a second terminal, list the services:
+
+```bash
+ros2 service list
+```
+
+You’ll see there’s a `/spawn` service. This is exactly what we need. To check its type:
+
+```bash
+ros2 service type /spawn
+```
+
+we get `turtlesim/srv/Spawn` as the result.
+
+Now we can inspect the interface to see the request and response fields:
+
+```bash
+ros2 interface show turtlesim/srv/Spawn
+```
+
+![terminal](images/terminal57.png)
+
+Test the service manually first. Let’s try spawning a turtle from the terminal:
+
+```bash
+ros2 service call /spawn turtlesim/srv/Spawn "{x: 3.2, y: 5.1, theta: 3.14, name: 'test_name'}"
+```
+
+You’ll see a new turtle appear in the simulator window.
+
+![two turtles](images/teleop7.png)
+
+So this confirms that `/spawn` is the service we want to call from our node.
+
+Create the `turtle_spawner` node. Inside the package `turtlesim_catch_them_all`, create a new node file:
+
+```bash
+cd ~/ws/src/turtlesim_catch_them_all/turtlesim_catch_them_all
+
+touch turtle_spawner.py
+chmod +x turtle_spawner.py
+```
+
+Let’s write a first working version that just spawns **one turtle** when we run it.
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner")   
+        # create client for /spawn service
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+
+    def call_spawn_service(self, turtle_name, x, y, theta):
+	    # wait until service is available
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        # prepare request 
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        # send async request
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(
+            partial(self.callback_call_spawn_service, request=request)
+        )
+        
+    def callback_call_spawn_service(self, future, reqest):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    # test spawn one turtle
+    node.call_spawn_service("test", 4.0, 3.0, 0.0)
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+Add the node to `setup.py`:
+
+```python
+entry_points={
+    'console_scripts': [
+        "controller = turtlesim_catch_them_all.turtle_controller:main",
+        "spawner = turtlesim_catch_them_all.turtle_spawner:main",
+    ],
+}
+```
+
+Build the package:
+
+```
+colcon build --packages-select turtlesim_catch_them_all --symlink-install
+```
+
+then to test it we need to start turtlesim_node and then in new terminal run command:
+
+```bash
+ros2 run turtlesim_catch_them_all spawner 
+```
+
+Then test:
+1. Start `turtlesim_node`
+2. In another terminal, run:
+    `ros2 run turtlesim_catch_them_all spawner`
+
+Result: a new turtle appears.
+
+![terminal](images/terminal58.png)
+
+If you run it again, you’ll get an error because the turtle `"test"` already exists:
+
+![terminal](images/terminal59.png)
+
+To fix this, we’ll generate unique names for each new turtle and spawn them continuously.
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+import random
+import math
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner") 
+        self.turtle_name_prefix = "turtle"  
+        self.turtle_counter_ = 1
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+        self.spawn_timer_ = self.create_timer(2.0, self.spawn_new_turtle)
+                
+    def spawn_new_turtle(self):
+        self.turtle_counter_ += 1
+        name = self.turtle_name_prefix + str(self.turtle_counter_)
+        x = random.uniform(0.0, 11.0)
+        y = random.uniform(0.0, 11.0)
+        theta = random.uniform(0.0, 2*math.pi)
+        self.call_spawn_service(name, x, y, theta)
+        
+    def call_spawn_service(self, turtle_name, x, y, theta):
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(
+            partial(self.callback_call_spawn_service, request=request)
+        )
+        
+    def callback_call_spawn_service(self, future, request: Spawn.Request):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+We added a prefix (`turtle`) and a counter so that every new turtle gets a unique name like `turtle2`, `turtle3`, and so on. We also introduced a timer that calls the `spawn_new_turtle()` method every two seconds. Inside this method, random values for `x`, `y`, and `theta` are generated so each turtle appears at a random position and orientation on the screen. The rest of the logic stays the same as before: we build a request for the `/spawn` service, send it asynchronously, and in the callback we log a message once the new turtle is successfully created.
+
+To test it, run everything step by step. Run the turtlesim_node node and then in second terminal run the spawner node.
+
+![terminal](images/terminal60.png)
+
+And in the simulator, you’ll see a **new turtle appear every 2 seconds**
+
+## Step 3: Track alive turtles
+
+Now it’s time to make the two nodes you wrote earlier actually **communicate** with each other. The idea is simple: the `turtle_spawner` knows which turtles are alive (because it creates them), and the `turtle_controller` needs that information in order to chase them.
+
+The first step is to create a custom **message interface** so the spawner can publish a list of turtles, each with its name and coordinates.
+
+We’ll use the `my_robot_interfaces` package since it’s already configured for custom messages. Inside the `msg` folder, create two files:
+
+**Turtle.msg**
+
+```msg
+string name
+float64 x
+float64 y
+float64 theta
+```
+
+**TurtleArray.msg**
+
+```msg
+Turtle[] turtles
+```
+
+Here’s what’s happening:
+
+- `Turtle.msg` defines the structure of one turtle: its name, position `(x, y)`, and orientation `theta`.
+- `TurtleArray.msg` defines an array of `Turtle`. That way, you can publish not just one, but all alive turtles in a single message.
+
+Notice that inside `TurtleArray.msg`, you don’t prefix `Turtle` with a package name because both messages belong to the same package.
+
+### Build the new interfaces
+
+After adding the message files, you must register them in the **CMakeLists.txt** so ROS knows to build them. Add:
+
+```cmake
+"msg/Turtle.msg"
+"msg/TurtleArray.msg"
+```
+
+![terminal](images/add_interfaces.png)
+
+Then rebuild the package:
+
+```bash
+ colcon build --packages-select my_robot_interfaces
+```
+
+Once the build finishes, test that everything works. Run:
+
+```bash
+ros2 interface show my_robot_interfaces/msg/Turtle
+```
+
+![terminal](images/terminal61.png)
+
+You should see the structure of the `Turtle` message displayed in the terminal.
+
+One important note: after building new interfaces, close and reopen VS Code (or source the workspace again). This ensures the editor and terminal can properly recognize the new message types.
+
+Now that we have the messages, let’s update the spawner to actually publish them.
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+import random
+import math
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner") 
+        self.turtle_name_prefix = "turtle"  
+        self.turtle_counter_ = 1
+        self.alive_turtles_ = []
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+        self.spawn_timer_ = self.create_timer(2.0, self.spawn_new_turtle)
+        self.alive_turtles_publisher_ = self.create_publisher(TurtleArray, "alive_turtles", 10)
+                
+    def publish_alive_turtles(self):
+        #publish the alive turtle
+        msg = TurtleArray()
+        msg.turtles = self.alive_turtles_
+        self.alive_turtles_publisher_.publish(msg)
+    
+    def spawn_new_turtle(self):
+        self.turtle_counter_ += 1
+        name = self.turtle_name_prefix + str(self.turtle_counter_)
+        x = random.uniform(0.0, 11.0)
+        y = random.uniform(0.0, 11.0)
+        theta = random.uniform(0.0, 2*math.pi)
+        self.call_spawn_service(name, x, y, theta)
+        
+    def call_spawn_service(self, turtle_name, x, y, theta):
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(
+            partial(self.callback_call_spawn_service, request=request)
+        )
+        
+    def callback_call_spawn_service(self, future, request: Spawn.Request):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+            #Every time we spawn a new turtle we add it to the list and publish with publish_alive_turtle function
+            new_turtle = Turtle()
+            new_turtle.name = response.name
+            new_turtle.x = request.x
+            new_turtle.y = request.y
+            new_turtle.theta = request.theta
+            self.alive_turtles_.append(new_turtle)
+            self.publish_alive_turtles()
+
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+This version of the spawner node does more than just creating turtles. It also keeps track of them and shares that information with the rest of the system.
+
+When a new turtle is spawned, a `Turtle` message is created containing its name, x, y, and theta. That message is stored in the list `self.alive_turtles_`, which maintains the state of all turtles currently alive in the simulator.
+
+To let other nodes know about this state, the node uses a publisher on the `alive_turtles` topic. Each time a turtle is added, the list is wrapped into a `TurtleArray` message and published. This means any subscriber (like the controller node) can always get an up-to-date list of which turtles are alive and where they are located.
+
+In short, the spawner is now both responsible for creating turtles and for managing and broadcasting the global state of all active turtles.
+
+Now start `turtlesim_node` in one terminal, then run the spawner in another, and finally echo the new topic:
+
+```bash
+ros2 topic echo /alive_turtles
+```
+
+You should see a list of turtles with their names and positions.
+
+![terminal](images/terminal62.png)
+
+The controller now needs to **subscribe to the list of alive turtles**. We’ll pick the **first turtle** in the list and set it as the current target.
+
+Update the controller node
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+# added dependencies (package.xml)
+import math
+from turtlesim.msg import Pose
+from geometry_msgs.msg import Twist
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+
+class TurtleControllerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_contorller") 
+        # temporaray target destination
+        self.turtle_to_catch_: Turtle = None
+        self.pose_: Pose = None
+        # be carefull with topics, they need to be exact
+        self.pose_subscriber_ = self.create_subscription(Pose, "/turtle1/pose", self.callback_pose, 10)
+        self.cmd_vel_publisher_ = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+        self.control_loop_timer_ = self.create_timer(0.01, self.control_loop) #100hz
+        self.alive_turtles_subsriber_ = self.create_subscription(TurtleArray, "alive_turtles", self.callback_alive_turtles, 10)
+    
+    def callback_alive_turtles(self, msg: TurtleArray):
+        #here we receive the list of all turtles
+        if len(msg.turtles) > 0:
+            self.turtle_to_catch_ = msg.turtles[0]
+        
+    def callback_pose(self, pose:Pose):
+        self.pose_ = pose
+        
+    # common to have own contorl loop, dont want to relay on how fast pose callbacks
+    # if we dont have independant control loop itcan couse problems with snyconihration
+    def control_loop(self): # P control
+        #first we need to compute difference between TARGET and CURRENT POSE
+        if self.pose_ == None or self.turtle_to_catch_ == None:
+            return 
+        # we need a pose to continue
+        dist_x = self.turtle_to_catch_.x - self.pose_.x
+        dist_y = self.turtle_to_catch_.y - self.pose_.y
+        distance = math.sqrt(pow(dist_x, 2) + pow(dist_y, 2))
+        
+        cmd = Twist()
+        
+        if distance > 0.5:
+            #closer the turtle slower it moves (Simple control)
+            #position
+            cmd.linear.x = float(2 * distance) # 2 for P control
+            
+            #angle
+            goal_theta = math.atan2(dist_y, dist_x)
+            diff = goal_theta - self.pose_.theta
+            
+            #this makes sure that angle is between - and + pi (180deg) 
+            if diff > math.pi:
+                diff -= 2*math.pi
+            elif diff < -math.pi:
+                diff += 2*math.pi
+            
+            # 2 and 6 works well with this P control, found out with testing.
+            # turtle move better
+            cmd.angular.z = float(6 * diff) # 6 for P control
+            
+        else:
+            #target reached
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.0
+            #only use those 2 since it is 2D
+            
+        self.cmd_vel_publisher_.publish(cmd)        
+        
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleControllerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+In the previous version of the controller, the turtle was always moving toward one hardcoded target position (`self.target_x` and `self.target_y`). That worked for testing, but it isn’t flexible. Now, instead of using fixed coordinates, we make the controller listen to the `alive_turtles` topic. This topic is published by the spawner node and contains a list of all turtles currently on the screen.
+
+The new method `callback_alive_turtles` is called whenever an updated list of turtles is received. Inside this callback, we simply check if there is at least one turtle in the list, and if so, we pick the first one (`msg.turtles[0]`) as the active target. This turtle is stored in `self.turtle_to_catch_`.
+
+With this change, the control loop no longer works with fixed coordinates, but instead dynamically adjusts its target based on which turtles are alive. The math for computing distance and angle is the same as before—using Pythagoras for the distance and `atan2` for the angle—but now it uses the `x`, `y`, and `theta` values of the target turtle message rather than static numbers.
+
+In practice, this means that the master turtle (“turtle1”) will automatically move toward the first spawned turtle it sees, and when new turtles appear, the controller can switch its target accordingly. This lays the foundation for a real interaction between the spawner and controller nodes.
+
+Now open three terminals and run all three nodes:
+
+```bash
+#terminal 1
+ros2 run turtlesim turtlesim_node
+
+#terminal 2
+ros2 run turtlesim_catch_them_all controller
+
+#terminal 3
+ros2 run turtlesim_catch_them_all spawner
+```
+
+
+Now look at the turtlesim window. You’ll see that the master turtle (`turtle1`) starts moving toward the first spawned turtle. Once it reaches the target, it stops. At this point, even if new turtles keep spawning, the controller won’t move again, because it only picks a single target and doesn’t remove it from the list.
+
+![terminal](images/terminal63.png)
+
+So right now, the turtle moves to one spawned target and then stops there. In the next step, we’ll fix this by actually removing turtles once they are “caught,” so the master turtle can keep chasing the new ones.
+
+
+## Step 4: Catch and remove turtles
+
+Now that the master turtle can reach its target, the next step is to remove the target turtle once it has been “caught.” To do this, we’ll use the built-in `/kill` service from `turtlesim`.
+
+![terminal](images/terminal64.png)
+
+Instead of calling `/kill` directly from the controller node, it’s better practice to handle this logic inside the spawner node. Why? Because the spawner already manages the list of alive turtles and publishes it to the controller. This way, we keep responsibilities clean:
+
+- **Spawner node** = spawns and removes turtles, manages the alive turtle list.
+- **Controller node** = moves the master turtle toward a target and requests removal when caught.
+
+To achieve this, we’ll create a custom service called `catch_turtle`. The **controller node** will call this service when it has reached a turtle, and the **spawner node** will handle the request by calling the real `/kill` service and updating its list of alive turtles.
+
+Let’s create a new service interface called **CatchTurtle** inside the `my_robot_interfaces/srv` folder.
+
+**CatchTurtle.srv**
+
+```srv
+string name
+---
+bool success
+```
+and just add it to CMakeList.txt
+
+The request contains the name of the turtle we want to remove, and the response simply confirms whether the removal was successful.
+
+Don’t forget to update the `CMakeLists.txt` of the `my_robot_interfaces` package to include the new service:
+
+```cmake
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/Turtle.msg"
+  "msg/TurtleArray.msg"
+  "srv/CatchTurtle.srv"
+)
+```
+
+Finally, rebuild the package so the new interface is generated.
+
+```bash
+colcon build --packages-select my_robot_interfaces
+```
+
+And remember: after adding new interfaces, you should close and reopen VS Code (or source your workspace again) so everything is properly recognized.
+
+Edit the spawner node now:
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+import random
+import math
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+from my_robot_interfaces.srv import CatchTurtle  
+from turtlesim.srv import Kill
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner") 
+        self.turtle_name_prefix = "turtle"  
+        self.turtle_counter_ = 1
+        self.alive_turtles_ = []
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+        self.spawn_timer_ = self.create_timer(2.0, self.spawn_new_turtle)
+        self.alive_turtles_publisher_ = self.create_publisher(TurtleArray, "alive_turtles", 10)
+        self.catch_turtle_service_ = self.create_service(CatchTurtle, "catch_turtle", self.callback_catch_turtle)
+        self.kill_client_ = self.count_clients(Kill, "/kill")
+    
+    def callback_catch_turtle(self, request: CatchTurtle.Request, response: CatchTurtle.Response):
+        self.call_kill_service(request.name)
+        response.success = True
+        return response
+                
+    def publish_alive_turtles(self):
+        #publish the alive turtle
+        msg = TurtleArray()
+        msg.turtles = self.alive_turtles_
+        self.alive_turtles_publisher_.publish(msg)
+    
+    def spawn_new_turtle(self):
+        self.turtle_counter_ += 1
+        name = self.turtle_name_prefix + str(self.turtle_counter_)
+        x = random.uniform(0.0, 11.0)
+        y = random.uniform(0.0, 11.0)
+        theta = random.uniform(0.0, 2*math.pi)
+        self.call_spawn_service(name, x, y, theta)
+        
+    def call_spawn_service(self, turtle_name, x, y, theta):
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_spawn_service, request=request))
+        
+    def callback_call_spawn_service(self, future, request: Spawn.Request):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+            #Every time we spawn a new turtle we add it to the list and publish with publish_alive_turtle function45
+            new_turtle = Turtle()
+            new_turtle.name = response.name
+            new_turtle.x = request.x
+            new_turtle.y = request.y
+            new_turtle.theta = request.theta
+            self.alive_turtles_.append(new_turtle)
+            self.publish_alive_turtles()
+            
+    
+    def call_kill_service(self, turtle_name):
+        while not self.kill_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for kill service...")
+        
+        request = Kill.Request()
+        request.name = turtle_name
+        
+        future = self.kill_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_kill_service, turtle_name=turtle_name))
+        
+    def callback_call_kill_service(self, future, turtle_name):
+        for (i,turtle) in enumerate(self.alive_turtles_):
+            if turtle.name == turtle_name:
+                del self.alive_turtles_[i]
+                # publish new list so the controller gets it
+                self.publish_alive_turtles()
+                break
+                
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+In this updated spawner, we added a **new service server** called `catch_turtle`. When the controller requests a catch, this callback (`callback_catch_turtle`) forwards the request to the existing `/kill` service, which actually removes the turtle from the turtlesim simulation.
+
+Once the `/kill` service succeeds, we remove the turtle from our internal `alive_turtles_` list and immediately publish the updated list to the `alive_turtles` topic. This ensures that the controller (and any other subscribers) always has the correct state.
+
+In short: the controller just “asks” for a turtle to be caught, while the spawner takes care of the actual removal and keeping the global list accurate.
+
+
+now we need to focus on the controller node that is a ....So we're going to create a service client in the turtle controller.
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+# added dependencies (package.xml)
+import math
+from turtlesim.msg import Pose
+from geometry_msgs.msg import Twist
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+from my_robot_interfaces.srv import CatchTurtle
+from functools import partial
+
+class TurtleControllerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_contorller") 
+        # temporaray target destination
+        self.turtle_to_catch_: Turtle = None
+        self.pose_: Pose = None
+        # be carefull with topics, they need to be exact
+        self.pose_subscriber_ = self.create_subscription(Pose, "/turtle1/pose", self.callback_pose, 10)
+        self.cmd_vel_publisher_ = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+        self.control_loop_timer_ = self.create_timer(0.01, self.control_loop) #100hz
+        self.alive_turtles_subsriber_ = self.create_subscription(TurtleArray, "alive_turtles", self.callback_alive_turtles, 10)
+        self.catch_turtle_client_ = self.create_client(CatchTurtle, "catch_turtle")
+    
+    
+    def callback_alive_turtles(self, msg: TurtleArray):
+        #here we receive the list of all turtles
+        if len(msg.turtles) > 0:
+            self.turtle_to_catch_ = msg.turtles[0]
+        
+    def callback_pose(self, pose:Pose):
+        self.pose_ = pose
+        
+    # common to have own contorl loop, dont want to relay on how fast pose callbacks
+    # if we dont have independant control loop itcan couse problems with snyconihration
+    def control_loop(self): # P control
+        #first we need to compute difference between TARGET and CURRENT POSE
+        if self.pose_ == None or self.turtle_to_catch_ == None:
+            return 
+        # we need a pose to continue
+        dist_x = self.turtle_to_catch_.x - self.pose_.x
+        dist_y = self.turtle_to_catch_.y - self.pose_.y
+        distance = math.sqrt(pow(dist_x, 2) + pow(dist_y, 2))
+        
+        cmd = Twist()
+        
+        if distance > 0.5:
+            #closer the turtle slower it moves (Simple control)
+            #position
+            cmd.linear.x = float(2 * distance) # 2 for P control
+            
+            #angle
+            goal_theta = math.atan2(dist_y, dist_x)
+            diff = goal_theta - self.pose_.theta
+            
+            #this makes sure that angle is between - and + pi (180deg) 
+            if diff > math.pi:
+                diff -= 2*math.pi
+            elif diff < -math.pi:
+                diff += 2*math.pi
+            
+            # 2 and 6 works well with this P control, found out with testing.
+            # turtle move better
+            cmd.angular.z = float(6 * diff) # 6 for P control
+            
+        else:
+            #target reached
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.0
+            #only use those 2 since it is 2D
+            
+            #removing a turtle
+            self.call_catch_turtle_service(self.turtle_to_catch_.name)
+            self.turtle_to_catch_ = None # so that we will just return
+            
+        self.cmd_vel_publisher_.publish(cmd)   
+        
+    
+    def call_catch_turtle_service(self, turtle_name):     
+        while not self.catch_turtle_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for catch turtle service...")
+        
+        request = CatchTurtle.Request()
+        request.name = turtle_name
+        
+        future = self.catch_turtle_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_catch_turtle, turtle_name=turtle_name))
+        
+    def callback_call_catch_turtle(self, future, turtle_name):
+        response: CatchTurtle.Response = future.result()
+        if not response.success:
+            self.get_logger().error(f"turtle {turtle_name} could not be removed")
+        
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleControllerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+In this updated controller, we added a **new service client** for the `catch_turtle` service. The logic works like this: the controller still subscribes to the `alive_turtles` topic and picks the first turtle in the list as its current target. It moves toward that turtle using the same P-control logic as before.
+
+The difference comes when the master turtle actually reaches its target. Instead of just stopping, the controller now calls the `catch_turtle` service. This request is sent to the spawner node, which in turn calls the `/kill` service inside turtlesim to remove the turtle. Once the call is made, the controller resets its current target (`self.turtle_to_catch_ = None`) so that on the next loop, it waits until a new target appears in the alive turtles list.
+
+The helper method `call_catch_turtle_service` takes care of waiting for the service to be available, building the request, and sending it asynchronously. The callback checks the response to confirm whether the turtle was removed successfully.
+
+Now it’s time to test everything together.
+
+open three terminals and run all three nodes:
+
+```bash
+#terminal 1
+ros2 run turtlesim turtlesim_node
+
+#terminal 2
+ros2 run turtlesim_catch_them_all controller
+
+#terminal 3
+ros2 run turtlesim_catch_them_all spawner
+```
+
+Watch the turtlesim window. As turtles appear, the master turtle (`turtle1`) will start moving toward them.
+
+![terminal](images/terminal65.png)
+
+You’ll see that once the master turtle reaches a spawned turtle, the controller immediately calls the `catch_turtle` service. The spawner then removes that turtle using `/kill` and updates the `alive_turtles` list. The master turtle doesn’t stop, it simply moves on to the next target as soon as one is available.
+
+## Step 5: Improve the controller
+
+At this point, the controller always chased the **first turtle** in the `alive_turtles` list. That worked, but it wasn’t very smart. If a new turtle spawned right next to the master turtle, it would still ignore it and go after the first one that was listed.
+
+To improve this, we’ll make the controller always **select the closest turtle** instead.
+
+We’ll also make the simulation more dynamic by reducing the spawn interval in the spawner node to 0.8 seconds, so turtles appear faster.
+
+Here’s the updated spawner node with the faster spawn rate:
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+import random
+import math
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+from my_robot_interfaces.srv import CatchTurtle  
+from turtlesim.srv import Kill
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner") 
+        self.turtle_name_prefix = "turtle"  
+        self.turtle_counter_ = 1
+        self.alive_turtles_ = []
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+        self.spawn_timer_ = self.create_timer(0.8, self.spawn_new_turtle)
+        self.alive_turtles_publisher_ = self.create_publisher(TurtleArray, "alive_turtles", 10)
+        self.catch_turtle_service_ = self.create_service(CatchTurtle, "catch_turtle", self.callback_catch_turtle)
+        self.kill_client_ = self.create_client(Kill, "/kill")
+    
+    def callback_catch_turtle(self, request: CatchTurtle.Request, response: CatchTurtle.Response):
+        self.call_kill_service(request.name)
+        response.success = True
+        return response
+                
+    def publish_alive_turtles(self):
+        #publish the alive turtle
+        msg = TurtleArray()
+        msg.turtles = self.alive_turtles_
+        self.alive_turtles_publisher_.publish(msg)
+    
+    def spawn_new_turtle(self):
+        self.turtle_counter_ += 1
+        name = self.turtle_name_prefix + str(self.turtle_counter_)
+        x = random.uniform(0.0, 11.0)
+        y = random.uniform(0.0, 11.0)
+        theta = random.uniform(0.0, 2*math.pi)
+        self.call_spawn_service(name, x, y, theta)
+        
+    def call_spawn_service(self, turtle_name, x, y, theta):
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_spawn_service, request=request))
+        
+    def callback_call_spawn_service(self, future, request: Spawn.Request):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+            #Every time we spawn a new turtle we add it to the list and publish with publish_alive_turtle function45
+            new_turtle = Turtle()
+            new_turtle.name = response.name
+            new_turtle.x = request.x
+            new_turtle.y = request.y
+            new_turtle.theta = request.theta
+            self.alive_turtles_.append(new_turtle)
+            self.publish_alive_turtles()
+            
+    
+    def call_kill_service(self, turtle_name):
+        while not self.kill_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for kill service...")
+        
+        request = Kill.Request()
+        request.name = turtle_name
+        
+        future = self.kill_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_kill_service, turtle_name=turtle_name))
+        
+    def callback_call_kill_service(self, future, turtle_name):
+        for (i,turtle) in enumerate(self.alive_turtles_):
+            if turtle.name == turtle_name:
+                del self.alive_turtles_[i]
+                # publish new list so the controller gets it
+                self.publish_alive_turtles()
+                break
+                
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+Now we updated the spawner so that turtles spawn faster, every **0.8 seconds** instead of 2. The rest of the spawning logic stays the same: each turtle gets a unique name, random position, and random orientation.
+
+The spawner still maintains an internal list of all alive turtles and publishes that list on the `alive_turtles` topic so other nodes (like the controller) always know what’s currently on the screen. It also keeps the **catch_turtle service**, which lets the controller request that a turtle be removed. The spawner handles the request by calling the `/kill` service, removing the turtle from the list, and republishing the updated list.
+
+In the **controller node**, whenever it receives the list of alive turtles, it now loops over all of them and computes the Euclidean distance to each one using:
+
+$$
+distance=\sqrt{(x_{target} - x_{current})^2 + (y_{target} - y_{current})^2}
+$$
+
+It keeps track of the smallest distance found and sets that turtle as the **new target**.
+
+This way, the master turtle always picks the **nearest turtle** instead of just the first in the list. The movement now looks smarter and more efficient.
+
+Run all three nodes again and pay attention to the turtlesim node window.
+
+![terminal](images/terminal66.png)
+
+You’ll see the master turtle in action: it continuously picks the **closest turtle**, chases it down, and removes it before heading off toward the next nearest one.
+
+
+## Step 6: Add parameters & automation
+
+At this stage we are not adding brand new features — instead, we make the application more **flexible and scalable** by introducing parameters and a launch file.
+
+Parameters allow us to change behavior (like spawn frequency or turtle naming) without touching the code. Launch files let us start everything with a single command and load parameters automatically.
+
+**Updated Turtle Controller code:**
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+import math
+from rclpy.node import Node 
+from turtlesim.msg import Pose
+from geometry_msgs.msg import Twist
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+from my_robot_interfaces.srv import CatchTurtle
+from functools import partial
+
+class TurtleControllerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_contorller") 
+        self.declare_parameter("catch_closest_turlte_first", True)
+        self.catch_closest_turtle_first_ = self.get_parameter("catch_closest_turlte_first").value
+        self.turtle_to_catch_: Turtle = None
+        self.pose_: Pose = None
+        self.pose_subscriber_ = self.create_subscription(Pose, "/turtle1/pose", self.callback_pose, 10)
+        self.cmd_vel_publisher_ = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
+        self.control_loop_timer_ = self.create_timer(0.01, self.control_loop) #100hz
+        self.alive_turtles_subsriber_ = self.create_subscription(TurtleArray, "alive_turtles", self.callback_alive_turtles, 10)
+        self.catch_turtle_client_ = self.create_client(CatchTurtle, "catch_turtle")
+    
+    
+    def callback_alive_turtles(self, msg: TurtleArray):
+        if len(msg.turtles) > 0:
+            if self.catch_closest_turtle_first_:
+                closest_turtle = None
+                closest_turtle_distance = None
+                
+                for turtle in msg.turtles:
+                    dist_x = turtle.x - self.pose_.x
+                    dist_y = turtle.y - self.pose_.y
+                    distance = math.sqrt(pow(dist_x, 2) + pow(dist_y, 2))
+                    if closest_turtle is None or distance < closest_turtle_distance:
+                        closest_turtle = turtle
+                        closest_turtle_distance = distance
+                self.turtle_to_catch_ = closest_turtle
+                
+            else:
+                self.turtle_to_catch_ = msg.turtles[0]
+        
+    def callback_pose(self, pose:Pose):
+        self.pose_ = pose
+        
+    def control_loop(self): 
+        if self.pose_ == None or self.turtle_to_catch_ == None:
+            return 
+        dist_x = self.turtle_to_catch_.x - self.pose_.x
+        dist_y = self.turtle_to_catch_.y - self.pose_.y
+        distance = math.sqrt(pow(dist_x, 2) + pow(dist_y, 2))
+        
+        cmd = Twist()
+        
+        if distance > 0.5:
+            cmd.linear.x = float(2 * distance) 
+            
+            goal_theta = math.atan2(dist_y, dist_x)
+            diff = goal_theta - self.pose_.theta
+            
+            if diff > math.pi:
+                diff -= 2*math.pi
+            elif diff < -math.pi:
+                diff += 2*math.pi
+            
+            cmd.angular.z = float(6 * diff)
+            
+        else:
+            cmd.linear.x = 0.0
+            cmd.angular.z = 0.0
+            
+            self.call_catch_turtle_service(self.turtle_to_catch_.name)
+            self.turtle_to_catch_ = None 
+            
+        self.cmd_vel_publisher_.publish(cmd)   
+        
+    
+    def call_catch_turtle_service(self, turtle_name):     
+        while not self.catch_turtle_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for catch turtle service...")
+        
+        request = CatchTurtle.Request()
+        request.name = turtle_name
+        
+        future = self.catch_turtle_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_catch_turtle, turtle_name=turtle_name))
+        
+    def callback_call_catch_turtle(self, future, turtle_name):
+        response: CatchTurtle.Response = future.result()
+        if not response.success:
+            self.get_logger().error(f"turtle {turtle_name} could not be removed")
+        
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleControllerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+In the controller we introduced a new **parameter** called `catch_closest_turtle_first`. If this parameter is `True`, the node loops through all alive turtles, calculates the Euclidean distance to each, and chooses the closest one as the target. If the parameter is `False`, it simply takes the first turtle in the list.
+
+This makes the controller flexible: you can switch between “chase the first turtle” or “chase the closest turtle” without modifying the code, just by changing a YAML file.
+
+
+**Updated Turtle Spawner code:**
+
+```python
+#!/usr/bin/env python3
+
+import rclpy
+import random
+import math
+from rclpy.node import Node 
+from turtlesim.srv import Spawn
+from functools import partial
+from my_robot_interfaces.msg import Turtle
+from my_robot_interfaces.msg import TurtleArray
+from my_robot_interfaces.srv import CatchTurtle  
+from turtlesim.srv import Kill
+
+class TurtleSpawnerNode(Node):  
+    def __init__(self):
+        super().__init__("turtle_spawner") 
+        self.declare_parameter("turtle_name_prefix", "turtle")
+        self.declare_parameter("spawn_freq_", 1.0)
+        
+        self.turtle_name_prefix = self.get_parameter("turtle_name_prefix").value
+        self.spawn_freq_ = self.get_parameter("spawn_freq_").value
+        self.turtle_counter_ = 1
+        self.alive_turtles_ = []
+        self.spawn_client_ = self.create_client(Spawn, "spawn")
+        self.spawn_timer_ = self.create_timer(1.0/self.spawn_freq_, self.spawn_new_turtle) # to get period
+        self.alive_turtles_publisher_ = self.create_publisher(TurtleArray, "alive_turtles", 10)
+        self.catch_turtle_service_ = self.create_service(CatchTurtle, "catch_turtle", self.callback_catch_turtle)
+        self.kill_client_ = self.create_client(Kill, "/kill")
+    
+    def callback_catch_turtle(self, request: CatchTurtle.Request, response: CatchTurtle.Response):
+        self.call_kill_service(request.name)
+        response.success = True
+        return response
+                
+    def publish_alive_turtles(self):
+        #publish the alive turtle
+        msg = TurtleArray()
+        msg.turtles = self.alive_turtles_
+        self.alive_turtles_publisher_.publish(msg)
+    
+    def spawn_new_turtle(self):
+        self.turtle_counter_ += 1
+        name = self.turtle_name_prefix + str(self.turtle_counter_)
+        x = random.uniform(0.0, 11.0)
+        y = random.uniform(0.0, 11.0)
+        theta = random.uniform(0.0, 2*math.pi)
+        self.call_spawn_service(name, x, y, theta)
+        
+    def call_spawn_service(self, turtle_name, x, y, theta):
+        while not self.spawn_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for server Spawn...")
+         
+        request = Spawn.Request()    
+        request.x = x
+        request.y = y
+        request.theta = theta
+        request.name = turtle_name
+        
+        future = self.spawn_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_spawn_service, request=request))
+        
+    def callback_call_spawn_service(self, future, request: Spawn.Request):
+        response: Spawn.Response = future.result()
+        if response.name != "":
+            self.get_logger().info("New alive turtle: " + response.name)
+            #Every time we spawn a new turtle we add it to the list and publish with publish_alive_turtle function45
+            new_turtle = Turtle()
+            new_turtle.name = response.name
+            new_turtle.x = request.x
+            new_turtle.y = request.y
+            new_turtle.theta = request.theta
+            self.alive_turtles_.append(new_turtle)
+            self.publish_alive_turtles()
+            
+    
+    def call_kill_service(self, turtle_name):
+        while not self.kill_client_.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for kill service...")
+        
+        request = Kill.Request()
+        request.name = turtle_name
+        
+        future = self.kill_client_.call_async(request)
+        future.add_done_callback(partial(self.callback_call_kill_service, turtle_name=turtle_name))
+        
+    def callback_call_kill_service(self, future, turtle_name):
+        for (i,turtle) in enumerate(self.alive_turtles_):
+            if turtle.name == turtle_name:
+                del self.alive_turtles_[i]
+                # publish new list so the controller gets it
+                self.publish_alive_turtles()
+                break
+                
+            
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleSpawnerNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == "__main__":
+    main()
+```
+
+### Quick code overview
+
+The spawner now also uses **parameters**. We added:
+
+- `turtle_name_prefix`: lets us customize how turtles are named.
+- `spawn_freq_`: sets the spawning frequency (in Hz). We convert it to a period (`1.0/spawn_freq_`) when creating the timer.
+
+This means you can now decide how quickly turtles appear and how they’re named — directly from a YAML file.
+
+### Launch & Config Setup
+
+Inside the **my_robot_bringup** package, we create a launch file:
+
+```
+touch turtlesim_catch_them_all.launch.xml
+```
+
+This package is dedicated to launch files, so inside its `launch/` folder we add `turtlesim_catch_them_all.launch.xml`:
+
+```xml
+<launch>
+    <node pkg="turtlesim" exec="turtlesim_node"/>
+    <node pkg="turtlesim_catch_them_all" exec="controller"/>
+    <node pkg="turtlesim_catch_them_all" exec="spawner"/>
+</launch>
+```
+
+This basic setup starts all three required nodes, but it does not yet configure any parameters. To fix that, we create a `config/` folder inside the same package and add a YAML configuration file named `catch_them_all_config.yaml`:
+
+```yaml
+/turtle_controller:
+  ros__parameters:
+    catch_closest_turtle_first: True
+
+/turtle_spawner:
+  ros__parameters:
+    turtle_name_prefix: "my_turtle"
+    spawn_freq_: 1.5
+```
+
+Here we define the parameters for both nodes: whether the controller should chase the closest turtle, the prefix used when naming spawned turtles, and the spawn frequency.
+
+Now we link this configuration file to the launch file:
+
+```xml
+<launch>
+    <node pkg="turtlesim" exec="turtlesim_node"/>
+    <node pkg="turtlesim_catch_them_all" exec="controller">
+        <param from="$(find-pkg-share my_robot_bringup)/config/catch_them_all_config.yaml"/>
+    </node>
+    <node pkg="turtlesim_catch_them_all" exec="spawner">
+        <param from="$(find-pkg-share my_robot_bringup)/config/catch_them_all_config.yaml"/>
+    </node>
+</launch>
+```
+
+Since this launch file references nodes from both `turtlesim` and `turtlesim_catch_them_all`, make sure to declare these dependencies in the `package.xml` of **my_robot_bringup**.
+
+![terminal](images/terminal68.png)
+
+Finally, save everything and build the bringup package:
+
+```bash
+colcon build --packages-select my_robot_bringup
+```
+
+Now you can start the entire application with one command:
+
+```bash
+ros2 launch my_robot_bringup turtlesim_catch_them_all.launch.xml
+```
+
+![terminal](images/terminal67.png)
+
+The end result is a fully automated system: turtles spawn on the screen at the chosen frequency, the master turtle continuously chases and catches them, and once caught they are removed. Thanks to parameters in the YAML file, you can easily adjust the spawn rate, change naming patterns, or switch between “chase the first turtle” and “chase the closest turtle” — all without modifying the code.
+
+## Final Project Conclusion
+
+With this project, we built a complete ROS2 application from scratch using **turtlesim** as a simulation environment. Step by step, we combined nodes, services, topics, custom messages, and launch files into a fully working system.
+
+- The **controller node** subscribed to the master turtle’s pose and sent velocity commands to chase targets.
+- The **spawner node** regularly created new turtles, tracked them, and published their positions to the `alive_turtles` topic.
+- We introduced **custom interfaces** (`Turtle`, `TurtleArray`, and `CatchTurtle`) to allow structured communication between nodes.
+- The **catch_turtle service** connected the controller and spawner, ensuring turtles were properly removed once caught.
+- Finally, we added **parameters and launch files**, making the system flexible and easy to configure without touching the source code.
+
+The end result is a dynamic simulation where turtles appear automatically, the master turtle continuously chases and catches them, and the entire process can be tuned through configuration files. This project illustrates the core concepts of ROS2 — publishers, subscribers, services, timers, parameters, and launch automation — all working together in a practical example.
+
+It’s a small but powerful demonstration of how modular design and ROS2’s communication tools can scale into larger robotic systems.
+
+
+# ROS2 Bootcamp Conclusion
+
+This workshop has taken us through the foundations of ROS2 and shown how modern robotics development can be both structured and approachable. By combining the power of ROS2 with Docker and VS Code devcontainers, we have established a workflow that mirrors industry practices and eliminates the frustrations of mismatched environments. Along the way, we explored the essential building blocks of robotics software—nodes, topics, publishers, subscribers, services, parameters, and launch files—and learned how each one contributes to the larger ecosystem of a robotic system.
+
+Beyond the technical details, this course was about developing a mindset: to build modular systems, to experiment freely, to rely on reproducibility, and to collaborate effectively. The ability to record and replay data, to visualize interactions with RQT, and to structure work with Git ensures that projects do not remain isolated exercises, but instead become portable, scalable, and shareable contributions to the robotics community.
+
+ROS2 is not just an academic tool, but a framework designed for the demands of real-world robotics—where reliability, security, and performance are critical. Whether we imagine autonomous mobile robots navigating warehouses, robotic arms assembling precision components, or experimental platforms driving research, ROS2 offers a common language that connects ideas to implementation. The exercises completed here may seem simple, but they reflect the same concepts used in cutting-edge industrial and research systems.
+
+As you continue your journey, remember that every project, no matter how small, reinforces the habits and skills that scale to much larger challenges. The transition from writing your first publisher node to building an entire multi-robot application is not as large as it may appear; it is simply a continuation of the same principles applied with greater depth and creativity.
+
+The future of robotics is collaborative, open, and driven by those who are willing to learn, experiment, and push boundaries. With the knowledge gained from this workshop, you are now equipped not only to follow tutorials but to start creating your own robotic solutions—solutions that can inspire, support, and transform the environments in which they are deployed.
+
+This is just the beginning. Keep experimenting, keep building, and let your curiosity drive you forward. The world of robotics is vast, and with ROS2 as your foundation, you have all the tools you need to make a real impact.
