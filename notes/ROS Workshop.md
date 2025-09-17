@@ -221,7 +221,7 @@ code .
         "source=ros2_install_cache,target=/home/ws/install,type=volume",
         "source=ros2_log_cache,target=/home/ws/log,type=volume"
     ],
-    "postCreateCommand": "postCreateCommand": "bash -c \"grep -qxF 'source /home/ws/setup_ws.sh' /home/nico/.bashrc || echo 'source /home/ws/setup_ws.sh' >> /home/nico/.bashrc\""
+    "postCreateCommand": "bash -c \"grep -qxF 'source /home/ws/setup_ws.sh' /home/nico/.bashrc || echo 'source /home/ws/setup_ws.sh' >> /home/nico/.bashrc\""
 
 }
 ```
@@ -296,7 +296,7 @@ ENV SHELL /bin/bash
 # * Anything else you want to do like clean up goes here *
 # ********************************************************
 # Install ROS2 demo nodes (talker/listener)
-RUN sudo apt-get update && sudo apt-get install -y \\
+RUN apt-get update && apt-get install -y \\
     ros-jazzy-demo-nodes-cpp \\
     ros-jazzy-ros-base \\
     ros-jazzy-demo-nodes-py \\
@@ -306,7 +306,7 @@ RUN sudo apt-get update && sudo apt-get install -y \\
     ros-jazzy-turtlesim \\
     #ros-jazzy-slam-toolbox \\
     #ros-jazzy-nav2-bringup \\
- && sudo rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/*
 
 # Source ROS automatically in bash
 #RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/$USERNAME/.bashrc
@@ -371,7 +371,7 @@ if [ -f /home/ws/install/setup.bash ]; then
 fi
 ```
 
-his script starts with `#!/bin/bash` to run it with Bash. `source /opt/ros/jazzy/setup.bash` loads the base ROS 2 environment, while the `if` block checks for and sources your workspace setup (`/home/ws/install/setup.bash`) if it exists. Together, this ensures every terminal automatically has ROS 2 and your workspace packages ready, so you can run nodes and access messages without manually sourcing each time.
+This script starts with `#!/bin/bash` to run it with Bash. `source /opt/ros/jazzy/setup.bash` loads the base ROS 2 environment, while the `if` block checks for and sources your workspace setup (`/home/ws/install/setup.bash`) if it exists. Together, this ensures every terminal automatically has ROS 2 and your workspace packages ready, so you can run nodes and access messages without manually sourcing each time.
 
 Make the script executable:
 
@@ -1069,11 +1069,11 @@ class RobotNewsStationNode(Node):
 	def __init__(self):
 		super().__init__("robot_news_station")
 		#String, name needs to start with letter
-		#last we add que size
+		#last we add queue size
 		self.publishers_ = self.create_publisher(String, "robot_news",10)
 		#add a timer, time in sec, method to call
 		self.timer_ = self.create_timer(0.5, self.publish_news)
-		self.get_logger().info("Robot news radio has been starterd")
+		self.get_logger().info("Robot news radio has been started")
 
 def publish_news(self):
 	msg = String()
@@ -1114,7 +1114,7 @@ We also need to add a dependency on `example_interfaces` in our package’s `pac
 
 his ensures that when the package is built, ROS 2 knows to include the `example_interfaces` package so that our node can use its message types.
 
- when the code is finished lets go to the setup.py where we need to install it.
+When the code is finished, update setup.py to include it.
  
  ```python
 entry_points={
@@ -1129,7 +1129,7 @@ now we  go to workspace and colcon build it.
 
 ```bash
 colcon build --packages-select my_py_pkg --symlink-install 
-#using symlink so no need to compile anymore
+#using symlink so no need to compile anymore for same python program
 ```
 
 Once the code is complete and the package is built, we can run our publisher node from a terminal:
@@ -1800,10 +1800,10 @@ class AddTwoIntsServerNode(Node):
 		# create Service Server
 		# chose srv, then service name(USE VERB - action,communication),
 		# and callback
-		# callback - server is not going to do aynthing on its
+		# callback - server is not going to do anything on its
 		# own since it need a client
 		self.server_ = self.create_service(AddTwoInts,"add_two_ints", self.callback_add_two_ints)
-		self.get_logger().info("Add two ints has server has been started")
+		self.get_logger().info("Add two ints server has been started")
 
 		# adding AddTwoInts.Request and AddTwoInts.Response makes it more explicit
 		# and easier to use and understand
@@ -1883,6 +1883,8 @@ This demonstrates a **complete request-response cycle** with a ROS 2 service.
 ![service call ](images/terminal7.png)
 
 ### Creating the Client Node - no OOP
+
+This client example is written without object-oriented programming (OOP) to keep it as short and simple as possible. It’s meant only as a demonstration of how a service client works in ROS 2. For real projects, the OOP style with classes is usually preferred because it makes code easier to extend, maintain, and reuse.
 
 Now let’s create a Python service client so we can actually call this new service directly from code. First, create a Python file called `add_two_ints_client_no_oop.py` in the package folder (`/home/ws/src/my_py_pkg/my_py_pkg`) and add the following code:
 
@@ -3488,7 +3490,7 @@ class RobotNewsStationNode(Node):
         #-----------
         self.publishers_ = self.create_publisher(String, "robot_news",10)
         self.timer_ = self.create_timer(0.5, self.publish_news)
-        self.get_logger().info("Robot news radio has been starterd")
+        self.get_logger().info("Robot news radio has been started")
         
     def publish_news(self):
         msg = String()
