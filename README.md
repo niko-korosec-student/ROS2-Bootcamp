@@ -21,15 +21,6 @@ It combines structured notes, cheat sheets, and Python exercises, with a ready-t
 - [Cheat Sheets](./cheatsheets)  
 - [Python Intro Exercises](./python_intro)  
 
-## Development Container Setup
-
-This repo is configured for use with **VS Code Dev Containers** + **Docker**.  
-The configuration lives in [`.devcontainer`](./.devcontainer).
-
-### Path Convention: `/workspaces/ROS2-Bootcamp`
-
-Inside the container, the repository is always mounted under: `/workspaces/ROS2-Bootcamp`
-
 ## Development Container Setup and Usage
 
 This repo is configured for use with **VS Code Dev Containers** + **Docker**. The container setup is defined under the `.devcontainer` folder.
