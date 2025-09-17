@@ -9,7 +9,7 @@
         }
     },
     "workspaceFolder": "/workspaces/ROS2-Bootcamp",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ROS2-Bootcamp,type=bind",
+    "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
     "customizations": {
         "vscode": {
             "extensions":[
@@ -46,9 +46,9 @@
     "mounts": [
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
         "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
-        "source=ros2_build_cache,target=/workspaces/ROS2-Bootcamp/build,type=volume",
-        "source=ros2_install_cache,target=/workspaces/ROS2-Bootcamp/install,type=volume",
-        "source=ros2_log_cache,target=/workspaces/ROS2-Bootcamp/log,type=volume"
+        "source=ros2_build_cache,target=${containerWorkspaceFolder}/build,type=volume",
+        "source=ros2_install_cache,target=${containerWorkspaceFolder}/install,type=volume",
+        "source=ros2_log_cache,target=${containerWorkspaceFolder}/log,type=volume"
     ],
-    "postCreateCommand": "bash -c \"grep -qxF 'source /workspaces/ROS2-Bootcamp/setup_ws.sh' /home/nico/.bashrc || echo 'source /workspaces/ROS2-Bootcamp/setup_ws.sh' >> /home/nico/.bashrc\""
+    "postCreateCommand": "bash -c \"grep -qxF 'source ${containerWorkspaceFolder}/setup_ws.sh' /home/nico/.bashrc || echo 'source ${containerWorkspaceFolder}/setup_ws.sh' >> /home/nico/.bashrc\""
 }
