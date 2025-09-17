@@ -30,7 +30,7 @@ This repo is configured for use with **VS Code Dev Containers** + **Docker**. Th
 ### Key Path Convention: `/workspaces/ROS2-Bootcamp`
 
 - Inside the container, the repository is mounted at `/workspaces/ROS2-Bootcamp`.
-- This path is **hard-coded in several places** in the `.devcontainer/devcontainer.json` and `Dockerfile`.
+- This path is **defined once** in `.devcontainer/devcontainer.json` and `.devcontainer/Dockerfile`.
 - All workspace-related commands and source scripts use this path, so it is crucial to keep this path consistent for proper operation.
 
 ### How to Set Up the Workspace on Your Machine
@@ -39,7 +39,8 @@ This repo is configured for use with **VS Code Dev Containers** + **Docker**. Th
 
 2. **Open a terminal in that folder and clone this repository:**
 
-`git clone https://github.com/yourusername/ROS2-Bootcamp.git`
+   ```bash
+   git clone https://github.com/yourusername/ROS2-Bootcamp.git
 
 3. **Open the folder in VS Code:**
 
@@ -57,16 +58,17 @@ The workspace folder inside the container is `/workspaces/ROS2-Bootcamp` and all
 
 ### Important Configuration Locations Using the Workspace Path
 
-You must update these paths if changing the workspace directory:
+You must update path if changing the workspace directory:
 
-- `.devcontainer/devcontainer.json`  
+*Devcontainer:*
+
 - `"workspaceFolder": "/workspaces/ROS2-Bootcamp"`
-- `"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ROS2-Bootcamp,type=bind"`
-- `postCreateCommand` that sources `/workspaces/ROS2-Bootcamp/setup_ws.sh`
 
-- `.devcontainer/Dockerfile`  
-- `WORKDIR /workspaces/ROS2-Bootcamp`  
-- Any scripts or commands relying on this path
+*Docker file:*
+
+- `ARG WsF=/workspaces/ROS2-Bootcamp`  
+
+Any scripts or commands relying on this path
 
 ### Running and Using the Container
 
