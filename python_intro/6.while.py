@@ -1,22 +1,33 @@
-print("Primer while zanke:")
+"""
+While Loops
+
+Unlike for-loops (which repeat a fixed number of times), 
+while-loops repeat until a condition is no longer true. 
+This makes them useful in robotics for:
+- Repeatedly checking sensor data until a condition is met
+- Running a control loop until a stop signal is received
+- Simulating "do-while" loops where the action must happen at least once
+"""
+
+print("Example: simple while loop")
 i = 0
 while i < 5:
-    print(f"while: Število je {i}")
+    print(f"while: number is {i}")
     i += 1
 
-print("\nPrimer simulacije do-while zanke:")
+print("\nExample: simulated do-while loop")
 j = 0
 while True:
-    print(f"do-while: Število je {j}")
+    print(f"do-while: number is {j}")
     j += 1
     if j >= 5:
         break
 
-print("\nVpiši 'stop' za konec programa.")
+print("\nExample: control loop waiting for a stop command")
 while True:
-    user_input = input("Vnesi nekaj: ")
+    user_input = input("Enter a command (type 'stop' to end): ")
     if user_input.lower() == "stop":
-        print("Konec zanke.")
+        print("Loop ended.")
         break
     else:
-        print(f"Vnesel si: {user_input}")
+        print(f"Command received: {user_input}")

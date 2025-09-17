@@ -1,3 +1,17 @@
+"""
+OOP Example 4: ROS2 Nodes
+
+In robotics, OOP is especially useful in ROS2:
+- Node attributes store publishers, subscribers, and timers
+- Methods define behavior (callbacks, actions)
+- Encapsulation keeps everything neatly inside one class
+- Inheritance allows us to build more complex nodes from simple ones
+
+Here we define a MinimalNode:
+- Publishes a String message every second
+- Uses a counter (self.i) as part of its state
+"""
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -13,7 +27,7 @@ class MinimalNode(Node):
         msg = String()
         msg.data = f"Hi, counting: {self.i}"
         self.publisher_.publish(msg)
-        self.get_logger().info(f"sent: {msg.data}")
+        self.get_logger().info(f"Sent: {msg.data}")
         self.i += 1
 
 def main(args=None):
@@ -24,16 +38,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
-
-"""
-Zakaj OOP v ROSu?
-
-    Omogoča lepo strukturiranje node-ov, da so spremenljivke in funkcije združene v objekt.
-
-    Lažje upravljanje z več funkcionalnostmi (več publisherjev, subscriberjev, servisov).
-
-    Enostavno podedovanje in prilagoditev obnašanja node-ov.
-
-    Povečuje berljivost in vzdrževanje kode.
-"""

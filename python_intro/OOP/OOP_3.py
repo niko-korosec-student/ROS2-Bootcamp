@@ -1,66 +1,48 @@
 """
-1. __init__ metoda in self
+OOP Example 3: State and Overriding Methods
 
-    __init__ je posebna metoda, ki se avtomatsko kliče, ko ustvarimo nov objekt razreda.
+Objects can have state (attributes that change over time). 
+Methods update that state, and we can override methods in subclasses.
 
-    self predstavlja konkretni objekt, ki ga ustvarjamo, in preko njega dostopamo do lastnosti in metod objekta.
+- Car has brand, year, and speed
+- accelerate() and brake() update speed
+- ElectricCar inherits Car and adds battery capacity
+- __str__ is overridden in ElectricCar to include battery info
 
-    V __init__ nastavimo začetne vrednosti lastnosti (atributov).
-
-2. Dodajanje lastnosti in logike
-
-V razred lahko dodajamo lastnosti (atribute) in funkcije (metode), ki izvajajo logiko. To nam omogoča, da podatke in funkcionalnost združimo skupaj.
-3. Override metode
-
-Metode lahko v podrazredih (ali tudi v samem razredu) prepišemo (override), da spremenimo njihovo delovanje, če želimo.
+This is similar to robotics, where a general Robot class 
+could be extended into an ElectricRobot or SCARARobot with extra attributes.
 """
 
-class Avto:
-    def __init__(self, znamka, letnik, hitrost=0):
-        self.znamka = znamka
-        self.letnik = letnik
-        self.hitrost = hitrost  # začetna hitrost
+class Car:
+    def __init__(self, brand, year, speed=0):
+        self.brand = brand
+        self.year = year
+        self.speed = speed  
 
-    def pospesi(self, povečava):
-        self.hitrost += povečava
-        print(f"Avto {self.znamka} pospeši na {self.hitrost} km/h")
+    def accelerate(self, amount):
+        self.speed += amount
+        print(f"{self.brand} accelerates to {self.speed} km/h")
 
-    def zaviraj(self, zmanjšava):
-        self.hitrost = max(0, self.hitrost - zmanjšava)
-        print(f"Avto {self.znamka} upočasni na {self.hitrost} km/h")
+    def brake(self, amount):
+        self.speed = max(0, self.speed - amount)
+        print(f"{self.brand} slows down to {self.speed} km/h")
 
     def __str__(self):
-        return f"Avto: {self.znamka}, letnik: {self.letnik}, trenutna hitrost: {self.hitrost} km/h"
+        return f"Car: {self.brand}, year: {self.year}, speed: {self.speed} km/h"
 
-class ElektricniAvto(Avto):
-    def __init__(self, znamka, letnik, baterija_kapaciteta, hitrost=0):
-        super().__init__(znamka, letnik, hitrost)  # pokličemo init iz nadrazreda
-        self.baterija_kapaciteta = baterija_kapaciteta  # dodamo lastnost baterije
+class ElectricCar(Car):
+    def __init__(self, brand, year, battery_capacity, speed=0):
+        super().__init__(brand, year, speed)  
+        self.battery_capacity = battery_capacity  
 
-    # Override metode __str__, da vključimo baterijo
     def __str__(self):
-        osnovni_tekst = super().__str__()
-        return f"{osnovni_tekst}, baterija: {self.baterija_kapaciteta} kWh"
+        base_text = super().__str__()
+        return f"{base_text}, battery: {self.battery_capacity} kWh"
 
-# Uporaba:
-tesla = ElektricniAvto("Tesla Model 3", 2023, 75)
-
-print(tesla)
-tesla.pospesi(50)
-tesla.zaviraj(20)
+# Example usage
+tesla = ElectricCar("Tesla Model 3", 2023, 75)
 print(tesla)
 
-
-"""
-Kaj vidimo v tem primeru?
-
-    __init__ nastavi osnovne lastnosti avtomobila.
-
-    self omogoča, da delo poteka znotraj objekta.
-
-    V podrazredu ElektricniAvto dodamo novo lastnost baterija_kapaciteta.
-
-    Override metode __str__ nam omogoči prikaz dodatnih informacij.
-
-    Metode pospesi in zaviraj vsebujejo logiko za spreminjanje stanja objekta.
-"""
+tesla.accelerate(50)
+tesla.brake(20)
+print(tesla)

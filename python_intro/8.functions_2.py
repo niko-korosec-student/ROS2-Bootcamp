@@ -1,18 +1,34 @@
-def pozdrav(ime, priimek=""):
-    if priimek:
-        return f"Živjo, {ime} {priimek}!"
-    return f"Živjo, {ime}!"
+"""
+Functions in Robotics (Advanced)
 
-def vsota(*stevilke):
+This example demonstrates:
+- Default arguments
+- Variable number of arguments (*args)
+- Keyword arguments (**kwargs)
+- Recursive functions
+
+These are very useful in robotics. For example:
+- Default values → optional robot parameters
+- *args → handling multiple joint positions
+- **kwargs → flexible robot configuration
+- Recursion → algorithms like path planning or Fibonacci-based timing
+"""
+
+def greet(name, surname=""):
+    if surname:
+        return f"Hello, {name} {surname}!"
+    return f"Hello, {name}!"
+
+def add(*numbers):
     total = 0
-    for stevilo in stevilke:
-        total += stevilo
+    for num in numbers:
+        total += num
     return total
 
-def podatki_o_osebi(ime, starost, **lastnosti):
-    info = f"Oseba {ime}, star {starost} let.\n"
-    for kljuc, vrednost in lastnosti.items():
-        info += f"- {kljuc}: {vrednost}\n"
+def robot_info(name, weight, **properties):
+    info = f"Robot {name}, weight {weight} kg.\n"
+    for key, value in properties.items():
+        info += f"- {key}: {value}\n"
     return info
 
 def fib(n):
@@ -20,12 +36,12 @@ def fib(n):
         return n
     return fib(n-1) + fib(n-2)
 
-# Primeri uporabe
-print(pozdrav("Niko", "Korošec"))       # z priimkom
-print(pozdrav("Ana"))                    # brez priimka
+# Usage examples
+print(greet("Niko", "Korosec"))          # with surname
+print(greet("Ana"))                      # without surname
 
-print("Vsota:", vsota(1, 3, 5, 7, 9))  # vsota poljubnega števila argumentov
+print("Sum:", add(1, 3, 5, 7, 9))        # arbitrary number of arguments
 
-print(podatki_o_osebi("Marko", 30, poklic="inženir", mesto="Ljubljana", hobi="kolesarjenje"))
+print(robot_info("UR5e", 20, location="Maribor", reach="0.85 m", payload="5 kg"))
 
-print("10. Fibonacci člen je:", fib(10))  # rekurzivna funkcija
+print("10th Fibonacci number is:", fib(10))  # recursive function

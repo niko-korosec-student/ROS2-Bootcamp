@@ -1,55 +1,36 @@
+"""
+OOP Example 1: Classes and Objects
+
+A class is a blueprint for creating objects. 
+Objects combine attributes (data) and methods (functions). 
+In this example, we model a circle:
+
+- __init__ : constructor, sets the radius when a circle is created
+- area()  : computes the area of the circle
+- change_radius() : updates the radius
+- __str__ : controls how the object is displayed with print()
+
+This shows encapsulation: keeping data (radius) and logic (area calculation) together.
+"""
+
 import math
 
-class Krog:
-    def __init__(self, radij):
-        self.radij = radij  # Inicializacija lastnosti radij
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius  
 
-    def ploscina(self):
-        return math.pi * (self.radij ** 2)  # Izračun površine kroga
+    def area(self):
+        return math.pi * (self.radius ** 2)  
 
-    def spremeni_radij(self, nov_radij):
-        self.radij = nov_radij  # Posodobitev lastnosti radij
+    def change_radius(self, new_radius):
+        self.radius = new_radius  
 
     def __str__(self):
-        return f"Krog z radijem {self.radij:.2f} in površino {self.ploscina():.2f}"
+        return f"Circle with radius {self.radius:.2f}, area {self.area():.2f}"
 
-# Ustvarimo objekt krog1
-krog1 = Krog(5)
+# Example usage
+circle1 = Circle(5)
+print(circle1)
 
-# Izpišemo podatke o krog1
-print(krog1)
-
-# Spremenimo radij in ponovno izpišemo podatke
-krog1.spremeni_radij(10)
-print(krog1)
-
-
-"""Razlaga:
-
-    import math
-    Uvozimo Pythonovo knjižnico za matematične funkcije, da lahko uporabimo math.pi.
-
-    Razred Krog
-    Definiramo razred, ki predstavlja krog z lastnostjo radij.
-
-    Metoda __init__
-    To je konstruktor. Ko ustvarimo nov Krog, nastavi začetni radij (npr. 5).
-
-    Metoda ploscina
-    Izračuna površino kroga s formulo π * r². Ta metoda nima parametrov razen self, ker uporablja lastnost objekta.
-
-    Metoda spremeni_radij
-    Omogoča, da spremenimo radij kroga po kreiranju objekta.
-
-    Metoda __str__
-    Definira, kako naj se objekt predstavi, ko ga poskušamo izpisati (print). Tukaj lepo zaokroži radij in površino na 2 decimalni mesti.
-
-    Ustvarjanje objekta krog1
-    S klicem Krog(5) naredimo krog s polmerom 5.
-
-    print(krog1)
-    Samodejno kliče metodo __str__ in izpiše podrobnosti o krogu.
-
-    Sprememba radija in ponoven izpis
-    Pokličemo metodo spremeni_radij z novim radijem 10 in ponovno izpišemo stanje objekta.
-    """
+circle1.change_radius(10)
+print(circle1)

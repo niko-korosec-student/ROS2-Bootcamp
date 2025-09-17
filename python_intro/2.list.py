@@ -1,15 +1,31 @@
-komponente = ["motor", "senzor", "krmilnik"]
+"""
+Lists
 
-komponente.append("baterija")     # Dodaj element na konec
-komponente.insert(0, "ram")       # Vstavi element na začetek
-komponente.remove("senzor")       # Odstrani določen element
+In robotics, we often work with collections of items:
+- Robot components (motors, sensors, controllers, batteries, etc.)
+- A sequence of waypoints in a path
+- A list of joint angles or sensor readings
 
-prva = komponente[0]              # Prvi element
-zadnja = komponente[-1]           # Zadnji element
-komponente[1] = "nov krmilnik"    # Sprememba elementa na indeksu 1
+Python lists allow us to store, modify, and iterate over such data easily.
+This example shows how to manage a list of robot components.
+"""
 
-print(f"Komponente ({len(komponente)}):")
-for k in komponente:              # Izpiši vse elemente
-    print(f"- {k}")
+# Define initial list of robot components
+components = ["motor", "sensor", "controller"]
 
-print(f"Prva: {prva}, Zadnja: {zadnja}")
+# Modify the list
+components.append("battery")         # Add element at the end
+components.insert(0, "RAM")          # Insert element at the beginning
+components.remove("sensor")          # Remove a specific element
+
+# Access elements
+first = components[0]                # First element
+last = components[-1]                # Last element
+components[1] = "new controller"     # Modify element at index 1
+
+# Output
+print(f"Components ({len(components)}):")
+for c in components:                 # Iterate through all elements
+    print(f"- {c}")
+
+print(f"First: {first}, Last: {last}")

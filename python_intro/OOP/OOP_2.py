@@ -1,46 +1,38 @@
+"""
+OOP Example 2: Inheritance
+
+Inheritance allows a class to reuse and extend another class.
+
+- ColoredCircle inherits all attributes and methods from Circle
+- super().__init__ calls the parent constructor so we don’t duplicate code
+- We add a new attribute (color)
+- We override __str__ to include color in the output
+
+In robotics, this is similar to creating a generic Robot class and then extending it into 
+a MobileRobot or IndustrialRobot with additional attributes.
+"""
+
 import math
 
-class Krog:
-    def __init__(self, radij):
-        self.radij = radij
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
 
-    def ploscina(self):
-        return math.pi * (self.radij ** 2)
-
-    def __str__(self):
-        return f"Krog z radijem {self.radij:.2f} in površino {self.ploscina():.2f}"
-
-class BarvniKrog(Krog):
-    def __init__(self, radij, barva):
-        super().__init__(radij)  # Pokličemo konstruktor nadrazreda Krog
-        self.barva = barva       # Dodamo novo lastnost barva
+    def area(self):
+        return math.pi * (self.radius ** 2)
 
     def __str__(self):
-        osnovni_tekst = super().__str__()  # Pokličemo __str__ iz nadrazreda
-        return f"{osnovni_tekst}, barva: {self.barva}"
+        return f"Circle with radius {self.radius:.2f}, area {self.area():.2f}"
 
-# Ustvarimo objekt barvni_krog1 z radijem 7 in barvo 'modra'
-barvni_krog1 = BarvniKrog(7, "modra")
+class ColoredCircle(Circle):
+    def __init__(self, radius, color):
+        super().__init__(radius)  
+        self.color = color       
 
-print(barvni_krog1)
+    def __str__(self):
+        base_text = super().__str__()  
+        return f"{base_text}, color: {self.color}"
 
-
-"""
-Razlaga:
-
-    Dedovanje (inheritance)
-    BarvniKrog(Krog) pomeni, da BarvniKrog podeduje vse lastnosti in metode od razreda Krog.
-
-    super().__init__(radij)
-    S tem pokličemo konstruktor nadrazreda Krog, da inicializira radij. Tako ne podvajamo kode.
-
-    Dodana lastnost barva
-    BarvniKrog razširi Krog z dodatno lastnostjo barve.
-
-    Override metode __str__
-    V BarvniKrog prilagodimo izpis, da dodamo tudi barvo, hkrati pa ohranimo izpis iz nadrazreda.
-
-    Ustvarjanje in izpis objekta barvni_krog1
-    Ustvarimo krog z radijem 7 in barvo "modra", nato ga izpišemo.
-
-"""
+# Example usage
+colored_circle1 = ColoredCircle(7, "blue")
+print(colored_circle1)

@@ -1,24 +1,37 @@
+"""
+Dictionaries
+
+Dictionaries let us store key-value pairs. 
+They are useful in robotics when we need to describe a robot, 
+its configuration, or any structured data. 
+Each piece of information is stored under a descriptive key, 
+making it easy to access, update, or remove.
+"""
+
+# Define a robot using a dictionary
 robot = {
-    "ime": "UR5e",
-    "doseg_m": 0.85,
-    "masa_kg": 20,
-    "aktiven": True
+    "name": "UR5e",
+    "reach_m": 0.85,
+    "mass_kg": 20,
+    "active": True
 }
 
-robot["lokacija"] = "Maribor"    # Dodajanje novega ključa in vrednosti
-robot["masa_kg"] = 22            # Posodabljanje vrednosti ključa
-del robot["aktiven"]             # Brisanje ključa in vrednosti
+# Modify dictionary content
+robot["location"] = "Maribor"    # Add new key-value pair
+robot["mass_kg"] = 22            # Update value for an existing key
+del robot["active"]              # Delete a key-value pair
 
-print("Robot podatki:", robot)  # Izpis celotnega slovarja
+# Print the whole dictionary
+print("Robot data:", robot)
 
-# Izpis vseh ključev in vrednosti
-for ključ, vrednost in robot.items():
-    print(f"{ključ}: {vrednost}")
+# Print all keys and values
+for key, value in robot.items():
+    print(f"{key}: {value}")
 
-# Izpis samo ključev
-for ključ in robot.keys():
-    print("Ključ:", ključ)
+# Print only keys
+for key in robot.keys():
+    print("Key:", key)
 
-# Izpis samo vrednosti
-for vrednost in robot.values():
-    print("Vrednost:", vrednost)
+# Print only values
+for value in robot.values():
+    print("Value:", value)

@@ -1,10 +1,20 @@
-def pozdrav(ime):
-    return f"Živjo, {ime}!"
+"""
+Functions (Intro)
 
-def vsota(a, b):
+Functions let us group reusable blocks of code. 
+In robotics, functions are useful for tasks like:
+- Greeting/logging messages
+- Performing mathematical calculations
+- Converting sensor data
+"""
+
+def greet(name):
+    return f"Hello, {name}!"
+
+def add(a, b):
     return a + b
 
-# Klic funkcij
-print(pozdrav("Niko"))
-rezultat = vsota(5, 7)
-print(f"Vsota 5 in 7 je: {rezultat}")
+# Function calls
+print(greet("Niko"))
+result = add(5, 7)
+print(f"The sum of 5 and 7 is: {result}")
