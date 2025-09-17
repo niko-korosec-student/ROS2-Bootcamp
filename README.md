@@ -1,3 +1,5 @@
+![ROS2 Bootcamp Banner](./notes/images/banner_ros2.gif)
+
 # ROS2-Bootcamp
 
 This repository is a learning workspace for practicing ROS 2.
