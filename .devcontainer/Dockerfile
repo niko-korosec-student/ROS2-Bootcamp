@@ -27,7 +27,9 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN apt-get update && apt-get install -y \
     ros-jazzy-demo-nodes-cpp \
     ros-jazzy-demo-nodes-py \
-    ros-jazzy-rviz2 \
+    #ros-jazzy-rviz2 \    
+    ros-jazzy-rqt \
+    ros-jazzy-rqt-common-plugins \
     ros-jazzy-ros2cli \
     ros-jazzy-teleop-twist-keyboard \
     ros-jazzy-turtlesim \
