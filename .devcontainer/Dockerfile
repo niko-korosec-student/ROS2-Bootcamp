@@ -35,4 +35,6 @@ RUN apt-get update && apt-get install -y \
     ros-jazzy-turtlesim \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p $WsF && chown -R $USER_UID:$USER_GID $WsF
+
 USER $USERNAME
