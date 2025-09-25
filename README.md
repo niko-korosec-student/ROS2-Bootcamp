@@ -78,25 +78,18 @@ Any scripts or commands relying on this path
 - The container mounts device files for GUI access, enabling tools such as RViz.
 - The `setup_ws.sh` script is added to the user's `.bashrc` to source the ROS 2 workspace environment automatically.
 
-WSL Setup (Alternative to VS Code Dev Containers)
+## WSL Setup (Alternative to VS Code Dev Containers)
 
 You can also set up and run this repository directly inside Windows Subsystem for Linux (WSL2) with Ubuntu 24.04.
 
-This guide is included alongside the notes (notes/wsl_setup.md).
-
-Using WSL lets you run a full Ubuntu environment directly on Windows without a virtual machine.
-
-Docker Desktop integrates with WSL2, so you can build and run the same ROS 2 container setup from inside Ubuntu on Windows.
-
-The project structure remains the same — your ROS2-Bootcamp folder will live inside WSL, right next to the other notes and exercises.
-
-This makes it possible to:
-
-Use ROS 2 on Windows through WSL.
-
-Keep everything in one place with your notes, cheat sheets, and Python exercises.
-
-Push your work to your own GitHub repo as usual.
+ - This guide is included alongside the notes (notes/wsl_setup.md).
+ - Using WSL lets you run a full Ubuntu environment directly on Windows without a virtual machine.
+ - Docker Desktop integrates with WSL2, so you can build and run the same ROS 2 container setup from inside Ubuntu on Windows.
+ - The project structure remains the same — your ROS2-Bootcamp folder will live inside WSL, right next to the other notes and exercises.
+ - This makes it possible to:
+ - Use ROS 2 on Windows through WSL.
+ - Keep everything in one place with your notes, cheat sheets, and Python exercises.
+ - Push your work to your own GitHub repo as usual.
 
 For the detailed installation and configuration steps, see: WSL Setup Guide
 .
