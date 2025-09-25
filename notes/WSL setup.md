@@ -44,7 +44,7 @@ This method installs the same distribution but uses the graphical interface inst
 
 ### Setting Up Your Ubuntu User
 
-Once the system restarts, open Ubuntu from the Start menu (just search for _Ubuntu 24.04_). The first time you launch it, the terminal will ask you to create a new Linux username and password.
+Once the system restarts, open Ubuntu from the Start menu (just search for _Ubuntu 24.04_). The first time you launch it, the terminal will ask you to create a new Linux username and passsword.
 
 - This username is separate from your Windows account.
 - Choose a simple name (for example, `student`).
