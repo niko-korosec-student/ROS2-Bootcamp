@@ -91,8 +91,7 @@ You can also set up and run this repository directly inside Windows Subsystem fo
  - Keep everything in one place with your notes, cheat sheets, and Python exercises.
  - Push your work to your own GitHub repo as usual.
 
-For the detailed installation and configuration steps, see: WSL Setup Guide
-.
+For the detailed installation and configuration steps, see: [WSL Setup Guide](./notes/WSL%20setup.md).
 
 ## Purpose
 This repository is both a study resource and a practice environment:
