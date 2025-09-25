@@ -38,7 +38,7 @@ On some systems, the `wsl --install` command may fail or may not recognize Ubunt
 - Search for **Ubuntu 24.04 LTS**.
 - Click **Get** (or **Install**) and wait for the installation to finish.
 
-![Ubuntu 24.04 in Microsoft Store](images/Ubuntu_store.png)
+![Ubuntu 24.04 in Microsoft Store](images/ubuntu_store.png)
 
 This method installs the same distribution but uses the graphical interface instead of the command line.
 
