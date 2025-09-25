@@ -22,6 +22,7 @@ It combines structured notes, cheat sheets, and Python exercises, with a ready-t
 - [Notes](./notes)  
 - [Cheat Sheets](./cheatsheets)  
 - [Python Intro Exercises](./python_intro)
+- [WSL Setup Guide](./notes/WSL%20setup.md).
 
 ## Development Container Setup and Usage
 
